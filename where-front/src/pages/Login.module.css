@@ -1,0 +1,46 @@
+.title{
+    font-family: 'Poppins', sans-serif;
+    font-size: 40px;
+    font-weight: 400;
+}
+
+.sidebar{
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding-left: 50px;
+    padding-right: 50px;
+    height: 100%;
+    max-width: 50%;
+    background-color: #050214;
+}
+
+.inputContainer{
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputLabel{
+    margin: 15px 2px;
+}
+
+.input{
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+}
+
+.input:focus{
+    border: none;
+}
+
+.signUpLink{
+    color: #C10C99;
+}
+
+@media (max-width: 800px) {
+    .sidebar{
+        width: 100%;
+    }
+}
