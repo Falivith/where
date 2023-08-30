@@ -6,9 +6,9 @@ DB_PASSWORD = senha do banco
 
 DB_DATABASE = nome do banco
 
-DB_HOST = ip do bnaco
+DB_HOST = ip do banco
 
-JWT_TOKEN_SECRET = qualquer coisa aqui por enquanto é a senha para autenticação
+JWT_TOKEN_SECRET = qualquer coisa aqui por enquanto, é a senha para autenticação do token
 
 e roda o comando "npm install"
 
