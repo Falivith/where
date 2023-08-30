@@ -1,11 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const { locais,eventos, promoters} = require('../models');
+const { usuarios, promoters} = require('../models');
 const {registerValidation} = require('../utils/validation')
 const {validateToken} = require('../utils/JWT')
 
 
+router.get('/', validateToken, async function(req,res,next) {
+    try {
+        const user = await usuarios.findOne({where: {email: req.username}});
+        if(!user) return res.json("rroer")
 
+        return res.status(200).json({
+            cpf: user.cpf,
+            nome: user.nome,
+            foto: user.foto,
+            descricao: user.descricao,
+            dataNasc: user.dataNasc,
+            email: user.email
+        })
+    } catch (error){
+        return res.status(400).json(error);
+    }
+})
 router.post('/upgrade', validateToken, async function(req,res,next){
 
     //Verify if user is already promoter
