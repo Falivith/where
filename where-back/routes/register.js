@@ -3,9 +3,8 @@ const router = express.Router();
 const { usuarios } = require('../models');
 const {registerValidation} = require('../utils/validation')
 const bcrypt = require('bcrypt')
-const {genSalt} = require("bcrypt");
 
-router.post('/', async(req, res) => {
+router.post('/', async function(req, res, next) {
 
     // Validate fields
     const {error} = registerValidation(req.body);
@@ -32,3 +31,4 @@ router.post('/', async(req, res) => {
     return res.status(200).json("Usuário criado com sucesso.");
 })
 module.exports = router;
+
