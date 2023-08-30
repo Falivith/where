@@ -25,6 +25,7 @@ const validateToken = (req, res, next) => {
         const validToken = verify(accessToken, process.env.JWT_TOKEN_SECRET)
         if (validToken){
             req.authenticated = true;
+            req.username = validToken.username;
             return next();
         }
     } catch(err){

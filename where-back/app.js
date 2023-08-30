@@ -7,7 +7,8 @@ const db = require("./models")
 
 var loginRouter = require('./routes/login');
 var registerRouter = require('./routes/register');
-var eventosRouter = require('./routes/eventos')
+var eventosRouter = require('./routes/eventos');
+var profileRouter = require('./routes/profile');
 
 var app = express();
 
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 app.use('/eventos', eventosRouter);
+app.use('/profile', profileRouter);
 
 
 // catch 404 and forward to error handler
