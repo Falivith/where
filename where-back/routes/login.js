@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken')
 const { usuarios } = require('../models');
+
 require('dotenv').config();
 
 const bcrypt = require('bcrypt')
 const {loginValidation} = require("../utils/validation");
+const { createTokens } = require("../utils/JWT")
 
 router.post('/', async function(req, res,next){
     // Validate fields
@@ -22,8 +24,12 @@ router.post('/', async function(req, res,next){
 
 
     //Create Token
-    const token = jwt.sign({_id: usuarios.email}, process.env.JWT_TOKEN_SECRET)
-    res.header('auth-token', token).json(token);
+    const accessToken = createTokens(user);
+
+    return res.status(200).cookie('where-access-token',
+        accessToken,
+        {maxAge: 60*60*24*1000})
+        .json("Logado");
 });
 
 module.exports = router;
