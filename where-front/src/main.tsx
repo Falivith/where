@@ -7,6 +7,7 @@ import Register from './pages/Register.tsx';
 import Map from './pages/Map.tsx';
 import Warning from './pages/Warning.tsx';
 import Date from './pages/Date.tsx';
+import Events from './pages/Events.tsx';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,11 @@ const router = createBrowserRouter([
   {
     path: "/user",
     element: <Warning title={"Deseja se tornar usuario?"}/>
+  }
+  ,
+  {
+    path: "/events",
+    element: <Events/>
   }
 ])
 

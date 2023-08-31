@@ -88,7 +88,7 @@ function Header() {
           control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
         />
 
-        <Link to="/map" className={ styles.linkToEvents }>
+        <Link to="/events" className={ styles.linkToEvents }>
           Eventos
         </Link>
       </div>

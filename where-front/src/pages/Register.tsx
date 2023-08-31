@@ -1,8 +1,9 @@
-import styles from './Login.module.css';
+import styles from './Register.module.css';
 import padlock from '../assets/padlock_icon.png';
 import email from '../assets/email_icon.png';
 import invisibleEye from '../assets/eye.png'
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Register() {
 
@@ -12,16 +13,20 @@ function Register() {
         setShowPassword(!showPassword);
     };
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    };
+
   return (
     <>
         <article className = { styles.sidebar }>
 
             <div>
                 <h1 className = { styles.title }>Criar Conta</h1>
-                <span className = { styles.titleSpan }>Se você já tiver uma conta, <a className = { styles.signUpLink } href=""> Entre aqui! </a></span>
+                <span className = { styles.titleSpan }>Se você já tiver uma conta, <Link to="/" className={styles.signUpLink}> entre aqui! </Link></span>
             </div>
 
-            <form className = { styles.form } action="submit">
+            <form className = { styles.form } onSubmit = {handleSubmit}>
             
                 <div className = { styles.inputContainer }>
 
@@ -35,10 +40,10 @@ function Register() {
 
                 <div className = { styles.inputContainer }>
 
-                    <label className = { styles.inputLabel } htmlFor="">E-mail</label>
+                    <label className = { styles.inputLabel } htmlFor="">Nome de Usuário</label>
                     <div className = { styles.inputOuterStyle }>
                         <img className = { styles.inputIcon } src = { email } alt="" />
-                        <input className = { styles.input } placeholder = "Entre com seu endereço de email" type="text" />
+                        <input className = { styles.input } placeholder = "Digite seu nome de usuário" type="text" />
                     </div>
 
                 </div>
@@ -75,7 +80,7 @@ function Register() {
                     </div>
                 </div>
                 
-                <button formAction="submit" className = { styles.loginButton }>Registrar</button>
+                <button type="button" className={styles.loginButton}>Registrar</button>
             </form>
         </article>
     </>

@@ -13,6 +13,10 @@ function Login() {
         setShowPassword(!showPassword);
     };
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    };
+
   return (
     <>
         <article className = { styles.sidebar }>
@@ -22,7 +26,7 @@ function Login() {
                 <span className = { styles.titleSpan }>Se você não tiver uma conta, <Link to="/register" className={styles.signUpLink}> registre-se </Link></span>
             </div>
 
-            <form className = { styles.form } action="submit">
+            <form className = { styles.form } onSubmit = {handleSubmit}>
             
                 <div className = { styles.inputContainer }>
                     <label className = { styles.inputLabel } htmlFor="">E-mail</label>
@@ -49,7 +53,7 @@ function Login() {
                     </div>
                 </div>
                 
-                <button formAction="submit" className = { styles.loginButton }>Entrar</button>
+                <button type="button" className = { styles.loginButton }>Entrar</button>
                 <Link to="/map" className={styles.signUpLink}> Ir pra Mapa (Dev Only) </Link>
             </form>
         </article>

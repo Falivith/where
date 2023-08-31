@@ -15,4 +15,10 @@
 .linkToEvents{
     text-decoration: none;
     color: white;
+    transition: .2s;
+}
+
+.linkToEvents:hover{
+    color: gray;
+
 }
