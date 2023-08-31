@@ -18,6 +18,7 @@
   -webkit-text-size-adjust: 100%;
 }
 
-body{
+body, html{
   margin: 0;
+  height: 100%;
 }
