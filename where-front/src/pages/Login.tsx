@@ -13,7 +13,7 @@ function Login() {
         setShowPassword(!showPassword);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
     };
 
