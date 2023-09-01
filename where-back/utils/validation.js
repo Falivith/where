@@ -76,7 +76,35 @@ const eventValidation = data => {
     return schema.validate(data);
 }
 
+//Event Update validation
+const eventUpdateValidation = data => {
+    const schema = Joi.object({
+        nome: Joi.string()
+            .min(6)
+            .max(100),
+        endereco: Joi.string()
+            .min(6)
+            .max(100),
+        estabelecimento: Joi.string()
+            .min(3)
+            .max(100),
+        inicio: Joi.date().format('YYYY-MM-DD'),
+        fim: Joi.date().format('YYYY-MM-DD'),
+        horario: Joi.date().format('YYYY-MM-DD HH:mm:ss'),
+        descricao: Joi.string()
+            .min(0)
+            .max(65535),
+        latitude: Joi.string().regex(/^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$/, 'numbers').max(12).min(12)
+            .min(8)
+            .max(32),
+        longitude: Joi.string().regex(/^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$/, 'numbers').max(12).min(12)
+            .min(8)
+            .max(32),
+    });
+    return schema.validate(data);
+}
+
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.eventValidation = eventValidation;
-;
+module.exports.eventUpdateValidation = eventUpdateValidation;
