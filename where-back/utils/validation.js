@@ -38,5 +38,27 @@ const loginValidation = data => {
     return schema.validate(data);
 }
 
+//Event validation
+// const registerValidation = data => {
+//     const schema = Joi.object({
+//         name: Joi.string()
+//             .min(6)
+//             .max(60)
+//             .required(),
+//         email: Joi.string()
+//             .min(6)
+//             .max(60)
+//             .required()
+//             .email(),
+//         password: Joi.string()
+//             .min(8)
+//             .max(32)
+//             .required(),
+//         date: Joi.date().format('YYYY-MM-DD')
+//             .required(),
+//     });
+//     return schema.validate(data);
+// }
+
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation

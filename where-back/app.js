@@ -30,7 +30,8 @@ app.use('/profile', profileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  //next(createError(404));
+  next(res.status(404).json({error: "Route not found."}));
 });
 
 // error handler

@@ -4,14 +4,16 @@ module.exports = function(sequelize, DataTypes) {
     email_fk: {
       type: DataTypes.STRING(60),
       allowNull: false,
+      primaryKey: true,
       references: {
         model: 'usuarios',
         key: 'email'
       }
     },
     codEvento_fk: {
-      type: DataTypes.STRING(32),
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+      primaryKey: true,
       references: {
         model: 'eventos',
         key: 'codEvento'
@@ -26,6 +28,15 @@ module.exports = function(sequelize, DataTypes) {
     tableName: 'participam',
     timestamps: false,
     indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "email_fk" },
+          { name: "codEvento_fk" },
+        ]
+      },
       {
         name: "Participam_FK",
         using: "BTREE",

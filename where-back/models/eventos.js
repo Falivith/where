@@ -2,7 +2,8 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('eventos', {
     codEvento: {
-      type: DataTypes.STRING(32),
+      autoIncrement: true,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       primaryKey: true
     },
@@ -30,9 +31,21 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: false
     },
+    estabelecimento: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    latitude: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    longitude: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
     codEvento_fk: {
-      type: DataTypes.STRING(32),
-      allowNull: true,
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
       references: {
         model: 'eventos',
         key: 'codEvento'
@@ -44,22 +57,6 @@ module.exports = function(sequelize, DataTypes) {
       references: {
         model: 'usuarios',
         key: 'email'
-      }
-    },
-    latitude_fk: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      references: {
-        model: 'locais',
-        key: 'latitude'
-      }
-    },
-    longitude_fk: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      references: {
-        model: 'locais',
-        key: 'longitude'
       }
     }
   }, {
@@ -80,14 +77,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "email_fk" },
-        ]
-      },
-      {
-        name: "Eventos_FK_2",
-        using: "BTREE",
-        fields: [
-          { name: "latitude_fk" },
-          { name: "longitude_fk" },
         ]
       },
       {
