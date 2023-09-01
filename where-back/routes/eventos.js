@@ -15,7 +15,7 @@ router.get('/', validateToken, async function(req,res,next) {
    }
 });
 
-router.get('/seuseventos', validateToken, async function(req, res, next){
+router.get('/user', validateToken, async function(req, res, next){
    try {
       // Get all events of a LOGGED USER from database
       const listEventos = await eventos.findAll({
@@ -30,7 +30,7 @@ router.get('/seuseventos', validateToken, async function(req, res, next){
 
 })
 
-router.post('/criarevento', validateToken, async function(req,res,next){
+router.post('/create', validateToken, async function(req,res,next){
    //Verfiy if user is promoter
    const isPromoter = await promoters.findOne({where :
           {email_fk: req.username} });
@@ -38,24 +38,30 @@ router.post('/criarevento', validateToken, async function(req,res,next){
 
 
    try {
-         eventos.create({
+         await eventos.create({
          descricao: req.body.descricao,
          nome: req.body.nome,
-         endereço: req.body.endereço,
+         endereco: req.body.endereco,
          inicio: req.body.inicio,
          fim: req.body.fim,
-         email_fk: req.body.email_fk,
+         email_fk: req.username,
          codEvento_fk: req.body.codEvento_fk,
          latitude_fk: req.body.latitude_fk,
          longitude_fk: req.body.longitude_fk,
          horario: req.body.horario
-      })
+      }).then(
+          evento => {return res
+              .status(200)
+              .json({
+                  isPromoter: true,
+                  isCreated: true,
+                  id:evento.codEvento})});
    } catch (error){
-      return res.status(400).json({isPromoter: true, error});
+      return res.status(400).json({isPromoter: true, isCreated:false, error});
    }
 })
 
-router.get('/{id}', validateToken, async  function(req, res, next) {
+router.get('/:id', validateToken, async  function(req, res, next) {
 
 })
 module.exports = router;

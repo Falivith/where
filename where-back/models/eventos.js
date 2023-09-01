@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    'endereço': {
+    endereco: {
       type: DataTypes.STRING(100),
       allowNull: false
     },
@@ -45,7 +45,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     codEvento_fk: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'eventos',
         key: 'codEvento'
