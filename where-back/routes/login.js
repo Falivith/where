@@ -16,20 +16,28 @@ router.post('/', async function(req, res,next){
 
     // Search email
     const user = await usuarios.findOne({ where: {email: req.body.email}});
-    if (!user) return res.status(400).json("Usuário não encontrado");
+    if (!user) return res.status(400).json({isUser: false});
 
     // Verify password
     const validPass = await bcrypt.compare(req.body.password, user.senha);
-    if(!validPass) return res.status(400).json("Senha invalida");
+    if(!validPass) return res.status(400).json({isUser:true, validPassword:false});
 
 
     //Create Token
-    const accessToken = createTokens(user);
+    try {
+        const accessToken = createTokens(user);
 
-    return res.status(200).cookie('where-access-token',
-        accessToken,
-        {maxAge: 60*60*24*1000})
-        .json("Logado");
+        return res.status(200).cookie('where-access-token',
+            accessToken,
+            {maxAge: 60 * 60 * 24 * 1000})
+            .json({isUser: true, validPassword: true, isLogged: true});
+    } catch(error) {
+        //Failed to create token
+        return res.status(400).json({
+            isUser: true,
+            validPassword: true,
+            isLogged: false});
+    }
 });
 
 module.exports = router;

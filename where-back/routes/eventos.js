@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { participam, locais,eventos, promoters} = require('../models');
-const {registerValidation} = require('../utils/validation')
+const { eventos, promoters} = require('../models');
 const {validateToken} = require('../utils/JWT')
 const {eventUpdateValidation,eventValidation} = require('../utils/validation')
 
