@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { usuarios } = require('../models');
+const { participam, eventos} = require('../models');
 const {registerValidation} = require('../utils/validation')
 const bcrypt = require('bcrypt')
+const {validateToken} = require("../utils/JWT");
 
 router.post('/', async function(req, res, next) {
 
@@ -42,5 +43,18 @@ router.post('/', async function(req, res, next) {
 
 
 })
+
+router.get('/confirmed', validateToken, async function(req, res, next) {
+
+   const codEvents = await participam.findAll({attributes:['codEvento_fk'], where:{email_fk:req.username}});
+
+   const listEvents = await eventos.findAll({where: {codEvento_fk:codEvents, confirmado:true}});
+   listEvents.email_fk = undefined;
+
+   return res.status(200).json(listEvents);
+})
+
+
+
 module.exports = router;
 

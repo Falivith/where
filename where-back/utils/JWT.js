@@ -26,6 +26,7 @@ const validateToken = (req, res, next) => {
         if (validToken){
             req.authenticated = true;
             req.username = validToken.username;
+            req.responseJson = {auth:true}
             return next();
         }
     } catch(err){

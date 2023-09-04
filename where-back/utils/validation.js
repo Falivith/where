@@ -104,7 +104,25 @@ const eventUpdateValidation = data => {
     return schema.validate(data);
 }
 
+const avaliaValidation = data => {
+    const schema = Joi.object({
+        codEvento_fk: Joi.number()
+            .min(0)
+            .required(),
+        rating: Joi.number()
+            .min(0)
+            .max(5)
+            .required(),
+        comentario: Joi.string()
+            .max(256)
+            .optional()
+            .allow(null)
+    })
+    return schema.validate(data);
+}
+
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.eventValidation = eventValidation;
 module.exports.eventUpdateValidation = eventUpdateValidation;
+module.exports.avaliaValidation = avaliaValidation;
