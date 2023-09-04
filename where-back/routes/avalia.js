@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
-var moment = require('moment');
-const { avalia,eventos, promoters} = require('../models');
+const moment = require('moment');
+const { avalia,eventos} = require('../models');
 const {validateToken} = require('../utils/JWT')
-const {eventUpdateValidation,eventValidation, avaliaValidation} = require('../utils/validation')
+const {avaliaValidation} = require('../utils/validation')
+
 
 router.get('/all', async function(req, res, next) {
+    console.log("aaa")
 
     //Create flags
     req.responseJson.isEvent = false;
-
 
     // Verify if event exists
     const event = eventos.findByPk(req.body.codEvento);
@@ -33,9 +34,9 @@ router.post('/', validateToken, async function(req, res, next) {
 
 
     // Validate
-    const{error} = avaliaValidation(res.body);
+    const{error} = avaliaValidation(req.body);
     if(error) {
-        req.responseJson.error = error;
+        req.responseJson.error = error.details[0].message;
         return res.status(400).json(req.responseJson);
     }
 
@@ -45,7 +46,7 @@ router.post('/', validateToken, async function(req, res, next) {
 
     try {
         await avalia.create({
-            codEvento_fk: req.body.codEvento,
+            codEvento_fk: req.body.codEvento_fk,
             email_fk: req.username,
             rating: req.body.rating,
             horario: moment().format("YYYY-MM-DD HH:mm:ss"),
@@ -53,7 +54,7 @@ router.post('/', validateToken, async function(req, res, next) {
         })
         return res.status(200).json({isCreated:true});
     } catch(error) {
-        req.responseJson.error = error;
+        req.responseJson.error = error.errors[0].message;
         return res.status(400).json(req.responseJson);
     }
 })

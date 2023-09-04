@@ -95,7 +95,7 @@ router.get('/id/:id', validateToken, async  function(req, res, next) {
 
     //Remove email value from response
     event.email_fk = undefined;
-    return res.status(200).json(req.responseJson);
+    return res.status(200).json(event);
 })
 
 router.put('/id/:id', validateToken, async function(req, res, next) {
