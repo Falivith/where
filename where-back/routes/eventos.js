@@ -98,6 +98,7 @@ router.get('/id/:id', validateToken, async  function(req, res, next) {
     return res.status(200).json(event);
 })
 
+//Update event information
 router.put('/id/:id', validateToken, async function(req, res, next) {
 
     //Create flags
@@ -153,6 +154,7 @@ router.put('/id/:id', validateToken, async function(req, res, next) {
 
 })
 
+//Delete event
 router.delete('/id/:id', validateToken, async function(req, res,next) {
 
     //Create flags
@@ -182,7 +184,60 @@ router.delete('/id/:id', validateToken, async function(req, res,next) {
     }
 })
 
+//Get number of interested users
+router.get('/interested', validateToken, async function(req, res, next) {
 
+    //Create flags
+    req.responseJson.isEvent = false;
 
+    //Get event
+    const event = await eventos.findByPk(req.params.id);
+
+    //Verify if event exists
+    if(!event) return res.status(400).json(req.responseJson);
+    req.responseJson.isEvent = true;
+
+    try {
+        const numberOfInterested = participam.count({where: {
+            codEvento_fk: req.body.codEvento_fk,
+            email_fk: req.username,
+            confirmado: false
+            }})
+        return res.status(200).json({numberOfInterested: numberOfInterested});
+    } catch(error) {
+        req.responseJson.error = error;
+        return res.status(400).json(req.responseJson);
+    }
+
+})
+
+//Get number of confirmed users
+router.get('/confirmed', validateToken, async function(req, res, next) {
+
+    //Create flags
+    req.responseJson.isEvent = false;
+
+    //Get event
+    const event = await eventos.findByPk(req.params.id);
+
+    //Verify if event exists
+    if(!event) return res.status(400).json(req.responseJson);
+    req.responseJson.isEvent = true;
+
+    try {
+        const numberOfInterested = participam.count({where: {
+                codEvento_fk: req.body.codEvento_fk,
+                email_fk: req.username,
+                confirmado: true
+            }})
+        return res.status(200).json({numberOfInterested: numberOfInterested});
+    } catch(error) {
+        req.responseJson.error = error;
+        return res.status(400).json(req.responseJson);
+    }
+})
+
+//Average rating of event
+router.get()
 
 module.exports = router;

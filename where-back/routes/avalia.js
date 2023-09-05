@@ -6,6 +6,7 @@ const {validateToken} = require('../utils/JWT')
 const {avaliaValidation} = require('../utils/validation')
 
 
+//Get list of ratings+comment+datime of a certain event
 router.get('/all', async function(req, res, next) {
 
     //Create flags
@@ -29,6 +30,7 @@ router.get('/all', async function(req, res, next) {
     }
 })
 
+// Create rating
 router.post('/', validateToken, async function(req, res, next) {
 
 
@@ -58,6 +60,7 @@ router.post('/', validateToken, async function(req, res, next) {
     }
 })
 
+// Update rating
 router.put('/', validateToken, async function(req, res, next) {
 
     //Create flags
@@ -91,6 +94,7 @@ router.put('/', validateToken, async function(req, res, next) {
     
 })
 
+//Find rating from x user and y event
 router.get('/', validateToken, async function(req, res, next) {
 
     try {
@@ -116,7 +120,7 @@ router.get('/', validateToken, async function(req, res, next) {
 })
 
 
-
+//Delete rating + comment
 router.delete('/', validateToken, async function(req, res, next) {
 
     try {

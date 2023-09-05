@@ -5,6 +5,7 @@ const {registerValidation, editUserValidation} = require('../utils/validation')
 const bcrypt = require('bcrypt')
 const {validateToken} = require("../utils/JWT");
 
+//Get user info
 router.get('/', validateToken, async function(req,res,next) {
     try {
         const user = await usuarios.findOne({where: {email: req.username}});
@@ -23,6 +24,7 @@ router.get('/', validateToken, async function(req,res,next) {
     }
 })
 
+//Create new user
 router.post('/create', async function(req, res, next) {
 
     //Create flags
@@ -62,6 +64,7 @@ router.post('/create', async function(req, res, next) {
 
 })
 
+//Get list of confirmed events from logged user
 router.get('/confirmed', validateToken, async function(req, res, next) {
 
    const codEvents = await participam.findAll({attributes:['codEvento_fk'], where:{email_fk:req.username}});
@@ -72,6 +75,7 @@ router.get('/confirmed', validateToken, async function(req, res, next) {
    return res.status(200).json(listEvents);
 })
 
+//Edit user information
 router.put('/edit', validateToken, async function(req,res,next){
 
     // Create flags
@@ -100,6 +104,7 @@ router.put('/edit', validateToken, async function(req,res,next){
     }
 })
 
+//Delete user
 router.delete('/', validateToken, async function(req, res, next) {
 
    try {
@@ -113,6 +118,7 @@ router.delete('/', validateToken, async function(req, res, next) {
    }
 })
 
+// Upgrade user to promoter
 router.post('/upgrade', validateToken, async function(req,res,next){
 
     //Verify if user is already promoter
