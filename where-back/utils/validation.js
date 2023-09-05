@@ -22,6 +22,28 @@ const registerValidation = data => {
     return schema.validate(data);
 }
 
+const editUserValidation = data =>{
+    const schema = Joi.object({
+        name: Joi.string()
+            .min(6)
+            .max(60)
+            .required(),
+        cpf: Joi.string()
+            .length(10)
+            .pattern(/^[0-9]+$/)
+            .allow(null)
+            .required(),
+        descricao: Joi.string()
+            .min(0)
+            .max(65535)
+            .allow(null)
+            .required(),
+        dataNasc: Joi.date().format('YYYY-MM-DD')
+            .required()
+    });
+    return schema.validate(data);
+}
+
 //Login Validation
 const loginValidation = data => {
     const schema = Joi.object({
@@ -126,3 +148,4 @@ module.exports.loginValidation = loginValidation;
 module.exports.eventValidation = eventValidation;
 module.exports.eventUpdateValidation = eventUpdateValidation;
 module.exports.avaliaValidation = avaliaValidation;
+module.exports.editUserValidation = editUserValidation;
