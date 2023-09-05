@@ -7,7 +7,6 @@ const {avaliaValidation} = require('../utils/validation')
 
 
 router.get('/all', async function(req, res, next) {
-    console.log("aaa")
 
     //Create flags
     req.responseJson.isEvent = false;
@@ -59,6 +58,39 @@ router.post('/', validateToken, async function(req, res, next) {
     }
 })
 
+router.put('/', validateToken, async function(req, res, next) {
+
+    //Create flags
+    req.responseJson.isValidated = false;
+    req.responseJson.isEvent = false;
+    req.responseJson.isDeleted = false;
+
+
+    // Validate
+    const{error} = avaliaValidation(req.body);
+    if(error) {
+        req.responseJson.error = error.details[0].message;
+        return res.status(400).json(req.responseJson);
+    }
+    req.responseJson.isValidated = true;
+
+    // Verify if event exists
+    const event = eventos.findByPk(req.body.codEvento_fk);
+    if(!event) return res.status(400).json(req.responseJson);
+    req.responseJson.isEvent = true;
+
+    try {
+        await avalia.destroy({where: {
+            codEvento_fk: req.body.codEvento_fk
+            }
+        })
+        return res.status(200).json({isDeleted:true})
+    } catch(error) {
+        return res.status(400).json(req.responseJson);
+    }
+    
+})
+
 router.get('/', validateToken, async function(req, res, next) {
 
     try {
@@ -77,11 +109,13 @@ router.get('/', validateToken, async function(req, res, next) {
 
         if (!rating) return res.status(400).json({hasRating: false});
 
-        return res.status(400).json()
+        return res.status(200).json({hasRating:true, rating:rating});
     } catch(error){
         return res.status(400).json({error:error});
     }
 })
+
+
 
 router.delete('/', validateToken, async function(req, res, next) {
 
@@ -92,6 +126,7 @@ router.delete('/', validateToken, async function(req, res, next) {
             }})
     } catch(error) {
         return req.status(400).json({error:error});
+
     }
 })
 

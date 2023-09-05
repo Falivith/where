@@ -155,17 +155,20 @@ router.put('/id/:id', validateToken, async function(req, res, next) {
 
 router.delete('/id/:id', validateToken, async function(req, res,next) {
 
+    //Create flags
+    req.responseJson.isEvent = false;
+    req.responseJson.isOwner = false;
+    req.responseJson.isDeleted = false;
+
     //Get event
     const event = await eventos.findByPk(req.params.id);
 
     // Verify if event exists
-    if(!event) return res.status(400).json({auth:true, isEvent:false});
+    if(!event) return res.status(400).json(req.responseJson);
+    req.responseJson.isEvent = true;
 
     //Verify if user is owner
-    if(event.email_fk != req.username) return res.status(400).json({
-        auth:true,
-        isEvent:true,
-        isOwner:false});
+    if(event.email_fk != req.username) return res.status(400).json(req.responseJson);
 
     try {
         //Try to delete event
@@ -173,19 +176,9 @@ router.delete('/id/:id', validateToken, async function(req, res,next) {
             where: { codEvento: req.params.id}
         });
         //Return success
-        return res.status(200).json({
-            auth:true,
-            isEvent:true,
-            isOwner:true,
-            isDeleted:true
-        });
+        return res.status(200).json({isDeleted:true});
     } catch(error) {
-        res.status(400).json({
-            auth:true,
-            isEvent:true,
-            isOwner:true,
-            isDeleted:false
-        });
+        res.status(400).json(req.responseJson);
     }
 })
 
