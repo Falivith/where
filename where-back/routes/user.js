@@ -104,7 +104,7 @@ router.delete('/', validateToken, async function(req, res, next) {
 
    try {
        await usuarios.destroy({ where: {
-           email_fk: req.username;
+           email_fk: req.username
            }
        })
        return res.status(200).json({isDeleted:true});
