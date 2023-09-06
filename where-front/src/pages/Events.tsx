@@ -38,7 +38,7 @@ const eventosMocados = [
 function Events() {
   return (
     <>
-      <Header />
+      <Header toMap = { true } />
       <div className={styles.gridContainer}>
         <div className={styles.grid}>
           {eventosMocados.map(event => (
