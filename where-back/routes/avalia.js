@@ -4,10 +4,11 @@ const moment = require('moment');
 const { avalia,eventos} = require('../models');
 const {validateToken} = require('../utils/JWT')
 const {avaliaValidation} = require('../utils/validation')
+const {Sequelize} = require("sequelize");
 
 
 //Get list of ratings+comment+datime of a certain event
-router.get('/all', async function(req, res, next) {
+router.get('/all', validateToken, async function(req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
@@ -16,12 +17,14 @@ router.get('/all', async function(req, res, next) {
     const event = eventos.findByPk(req.body.codEvento);
     if(!event) return res.status(400).json(req.responseJson);
 
+    // Validate entry
+
     // Get all ratings
     try {
         const ratingList = await avalia.findAll({
             attributes: ["comentario", "rating", "horario"],
             where: {codEvento_fk: req.body.codEvento},
-            order: ["horario", 'DESC']
+            order: [["horario", 'DESC']]
         })
 
         return res.status(200).json(ratingList);
@@ -44,6 +47,9 @@ router.post('/', validateToken, async function(req, res, next) {
     // Verify if event exists
     const event = eventos.findByPk(req.body.codEvento_fk);
     if(!event) return res.status(400).json(req.responseJson);
+
+    // Verify if user has rating
+
 
     try {
         await avalia.create({
@@ -131,6 +137,38 @@ router.delete('/', validateToken, async function(req, res, next) {
     } catch(error) {
         return req.status(400).json({error:error});
 
+    }
+})
+
+//Average rating of event
+router.get('/average', validateToken, async function(req,res,next) {
+
+    //Create flags
+    req.responseJson.isEvent = false;
+
+    // Verify if event exists
+    const event = await eventos.findByPk(req.body.codEvento_fk);
+    if(!event) return res.status(400).json(req.responseJson);
+
+    try {
+        const numberOfRatings = await avalia.count({
+            where: {codEvento_fk: req.body.codEvento_fk}
+        })
+        console.log(numberOfRatings);
+        if(numberOfRatings > 0) {
+            const average = await avalia.findOne({
+                where: {codEvento_fk: req.body.codEvento_fk},
+                attributes: [Sequelize.fn("AVG", Sequelize.col("rating"))],
+                raw:true
+            })
+            console.log(average);
+            return res.status(200).json({numberOfRatings:numberOfRatings, average:average['AVG(`rating`)']});
+        } else {
+            return res.status(200).json({numberOfRatings:0})
+        }
+
+    } catch(error) {
+        return res.status(400).json({error:error});
     }
 })
 

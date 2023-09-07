@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { participam,eventos, promoters} = require('../models');
+const { participam,eventos, promoters,avalia} = require('../models');
 const {validateToken} = require('../utils/JWT')
 const {eventUpdateValidation,eventValidation} = require('../utils/validation')
+const {Sequelize} = require("sequelize");
 
 
 router.get('/', validateToken, async function(req,res,next) {
@@ -237,7 +238,6 @@ router.get('/confirmed', validateToken, async function(req, res, next) {
     }
 })
 
-//Average rating of event
-router.get()
+
 
 module.exports = router;
