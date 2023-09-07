@@ -15,9 +15,13 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    endereco: {
+    'endereço': {
       type: DataTypes.STRING(100),
       allowNull: false
+    },
+    foto: {
+      type: DataTypes.BLOB,
+      allowNull: true
     },
     inicio: {
       type: DataTypes.DATEONLY,
@@ -45,7 +49,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     codEvento_fk: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: true,
+      allowNull: false,
       references: {
         model: 'eventos',
         key: 'codEvento'
