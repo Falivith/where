@@ -7,9 +7,9 @@ const db = require("./models")
 
 var loginRouter = require('./routes/login');
 var registerRouter = require('./routes/user');
-var eventosRouter = require('./routes/eventos');
+var eventsRouter = require('./routes/events');
 var userRouter = require('./routes/user');
-var ratingRouter = require('./routes/avalia');
+var ratingRouter = require('./routes/ratings');
 
 var app = express();
 
@@ -25,7 +25,7 @@ app.use(cookieParser());
 
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
-app.use('/events', eventosRouter);
+app.use('/events', eventsRouter);
 app.use('/user', userRouter);
 app.use('/ratings', ratingRouter);
 

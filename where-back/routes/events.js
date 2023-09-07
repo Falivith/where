@@ -4,17 +4,50 @@ const { participam,eventos, promoters,avalia} = require('../models');
 const {validateToken} = require('../utils/JWT')
 const {eventUpdateValidation,eventValidation} = require('../utils/validation')
 const {Sequelize} = require("sequelize");
+const {valid} = require("joi");
 
 
-router.get('/', validateToken, async function(req,res,next) {
+// Get all events
+router.get('/all', validateToken, async function(req,res,next) {
    try {
-      // get all event from database
-      const listEventos = await eventos.findAll({attributes : {exclude: ['email_fk']}});
-      return res.status(200).json({auth:true, listEventos});
+      // get all events from database
+      const listEventos = await eventos.findAll({
+          attributes : {exclude: ['email_fk']},
+          where : {}
+      });
+      return res.status(200).json(listEventos);
    } catch(error){
-      return res.status(400).json({auth:true, error});
+       req.responseJson.error = error;
+      return res.status(400).json(req.responseJson);
    }
 });
+
+// Get subevents
+router.get('/sub', validateToken, async function(req, res, next) {
+
+    //Create flag
+    req.responseJson.isEvent = false;
+
+    //Get event
+    const event = await eventos.findByPk(req.params.id);
+
+    // Verify if event exists
+    if(!event) return res.status(400).json(req.responseJson);
+    req.responseJson.isEvent = true;
+
+    try {
+        const listSubEvents = await eventos.findAll({
+            where : {codEvento_fk: req.body.codEvento_fk}
+        });
+        return res.status(200).json(listSubEvents);
+
+    } catch(error) {
+        req.responseJson.message = "Database error";
+        req.responseJson.error = error
+        return res.status(400).json(req.responseJson);
+    }
+
+})
 
 router.get('/user', validateToken, async function(req, res, next){
 
