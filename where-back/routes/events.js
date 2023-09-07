@@ -3,8 +3,9 @@ const router = express.Router();
 const { participam,eventos, promoters,avalia} = require('../models');
 const {validateToken} = require('../utils/JWT')
 const {eventUpdateValidation,eventValidation} = require('../utils/validation')
-const {Sequelize} = require("sequelize");
+const {Sequelize, Op} = require("sequelize");
 const {valid} = require("joi");
+const moment = require('moment');
 
 
 // Get all events
@@ -13,7 +14,11 @@ router.get('/all', validateToken, async function(req,res,next) {
       // get all events from database
       const listEventos = await eventos.findAll({
           attributes : {exclude: ['email_fk']},
-          where : {}
+          where : {
+              fim : {
+                  [Op.gt] : moment().format("YYYY-MM-DD HH:mm:ss")
+              }
+          }
       });
       return res.status(200).json(listEventos);
    } catch(error){
@@ -89,6 +94,7 @@ router.post('/create', validateToken, async function(req,res,next){
        req.responseJson.error = error.details[0].message;
        return res.status(400).json(req.responseJson);
    }
+   req.responseJson.isValidated = true;
 
    try {
          await eventos.create({
@@ -105,9 +111,7 @@ router.post('/create', validateToken, async function(req,res,next){
          estabelecimento: req.body.estabelecimento
       }).then(
           evento => {
-              req.responseJson.isCreated = true;
-              req.responseJson.id = evento.codEvento;
-              return res.status(200).json(req.responseJson);
+              return res.status(200).json({isCreated:true, id:evento.codEvento});
           }
           );
    } catch (error){

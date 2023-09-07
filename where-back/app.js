@@ -10,6 +10,7 @@ var registerRouter = require('./routes/user');
 var eventsRouter = require('./routes/events');
 var userRouter = require('./routes/user');
 var ratingRouter = require('./routes/ratings');
+var participateRouter = require('./routes/participate');
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.use('/register', registerRouter);
 app.use('/events', eventsRouter);
 app.use('/user', userRouter);
 app.use('/ratings', ratingRouter);
+app.use('/participate', participateRouter);
 
 
 // catch 404 and forward to error handler

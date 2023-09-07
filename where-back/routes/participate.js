@@ -7,9 +7,7 @@ const {eventUpdateValidation,eventValidation} = require('../utils/validation')
 
 router.get('/', validateToken, async function(req, res, next) {
 
-
-    const part = participam.findOne({where: {email_fk:req.username, codEvento_fk:req.body.codEvento}});
-
+    const part = await participam.findOne({where: {email_fk:req.username, codEvento_fk:req.body.codEvento_fk}});
     if(!part) return res.status(200).json({
         interested:false,
         confirmed:false
@@ -25,6 +23,101 @@ router.get('/', validateToken, async function(req, res, next) {
         confirmed:false
     })
 
+})
+
+router.post('/', validateToken, async function(req, res,next) {
+
+    // Create flags
+    req.responseJson.isEvent = false;
+    req.responseJson.participating = null;
+
+
+    // Verify if event exists
+    const event = await eventos.findByPk(req.body.codEvento_fk);
+    if(!event) return res.status(400).json(req.responseJson);
+    req.responseJson.isEvent = true;
+
+    // Verify if user is already participating
+    const participando = await participam.findOne({
+        where : {
+            codEvento_fk: req.body.codEvento_fk,
+            email_fk: req.username
+        }
+    })
+    if(participando) {
+        req.responseJson.participating = true;
+        return res.status(400).json(req.responseJson);
+    }
+    req.responseJson.participating = false;
+
+    try {
+        await participam.create({
+            codEvento_fk: req.body.codEvento_fk,
+            email_fk: req.username,
+            confirmado: req.body.confirmado
+        })
+        res.status(200).json("Participando!");
+    } catch(error) {
+        req.responseJson.error = error;
+        res.status(400).json(req.responseJson);
+    }
+
+})
+
+
+router.delete('/', validateToken, async function(req,res,next) {
+    try {
+        await participam.destroy({
+            where : {
+                codEvento_fk: req.body.codEvento_fk,
+                email_fk: req.username
+            }
+        })
+        res.status(200).json("Nao ta mais participando");
+    } catch(error) {
+        req.responseJson.error = error;
+        res.status(400).json(req.responseJson);
+    }
+})
+
+router.put('/', validateToken, async function(req,res,next) {
+
+    // Create flags
+    req.responseJson.isEvent = false;
+    req.responseJson.participating = false;
+
+
+    // Verify if event exists
+    const event = await eventos.findByPk(req.body.codEvento_fk);
+    if(!event) return res.status(400).json(req.responseJson);
+    req.responseJson.isEvent = true;
+    console.log("ROLA")
+    // Verify if user is already participating
+    const participando = await participam.findOne({
+        where : {
+            codEvento_fk: req.body.codEvento_fk,
+            email_fk: req.username
+        }
+    })
+    if(!participando) return res.status(400).json(req.responseJson);
+    req.responseJson.participating = true;
+
+
+    try {
+            await participam.update({
+                confirmado: req.body.confirmado
+            }, {
+                    where: {
+                        codEvento_fk:req.body.codEvento_fk,
+                        email_fk: req.username
+                    }
+                })
+
+            res.status(200).json("UPDATADO")
+    } catch(error) {
+        req.responseJson.error = error;
+        res.status(400).json(req.responseJson);
+    }
 })
 
 

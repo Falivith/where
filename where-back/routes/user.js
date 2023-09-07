@@ -67,12 +67,32 @@ router.post('/create', async function(req, res, next) {
 //Get list of confirmed events from logged user
 router.get('/confirmed', validateToken, async function(req, res, next) {
 
-   const codEvents = await participam.findAll({attributes:['codEvento_fk'], where:{email_fk:req.username}});
+    try {
+        const codEvents = await participam.findAll({attributes: ['codEvento_fk'], where: {email_fk: req.username}});
 
-   const listEvents = await eventos.findAll({where: {codEvento_fk:codEvents, confirmado:true}});
-   listEvents.email_fk = undefined;
+        const listEvents = await eventos.findAll({where: {codEvento_fk: codEvents, confirmado: true}});
+        listEvents.email_fk = undefined;
 
-   return res.status(200).json(listEvents);
+        return res.status(200).json(listEvents);
+    } catch( error ){
+        res.status(400).json("Database error ")
+    }
+})
+
+
+//Get list of confirmed events from logged user
+router.get('/interested', validateToken, async function(req, res, next) {
+
+    try {
+        const codEvents = await participam.findAll({attributes: ['codEvento_fk'], where: {email_fk: req.username}});
+
+        const listEvents = await eventos.findAll({where: {codEvento_fk: codEvents, confirmado: false}});
+        listEvents.email_fk = undefined;
+
+        return res.status(200).json(listEvents);
+    } catch (error) {
+        res.status(400).json("Database Error");
+    }
 })
 
 //Edit user information
