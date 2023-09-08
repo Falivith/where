@@ -8,7 +8,7 @@ const {valid} = require("joi");
 const moment = require('moment');
 
 
-// Get all events
+// Get all futere and current events
 router.get('/all', validateToken, async function(req,res,next) {
    try {
       // get all events from database
@@ -27,14 +27,14 @@ router.get('/all', validateToken, async function(req,res,next) {
    }
 });
 
-// Get subevents
+// Get subevents from x event
 router.get('/sub', validateToken, async function(req, res, next) {
 
     //Create flag
     req.responseJson.isEvent = false;
 
     //Get event
-    const event = await eventos.findByPk(req.params.id);
+    const event = await eventos.findByPk(req.body.codEvento_fk);
 
     // Verify if event exists
     if(!event) return res.status(400).json(req.responseJson);
@@ -54,6 +54,8 @@ router.get('/sub', validateToken, async function(req, res, next) {
 
 })
 
+
+// Get events where logged user is owner
 router.get('/user', validateToken, async function(req, res, next){
 
    // Create flag
@@ -68,14 +70,16 @@ router.get('/user', validateToken, async function(req, res, next){
       })
        //Remove email from response
       listEvents.forEach(event => event.email_fk = undefined);
-      return res.status(200).json({auth:true, listEvents: listEvents});
+      return res.status(200).json({listEvents: listEvents});
    } catch (error) {
-      return res.status(400).json({auth:true, error});
+       req.responseJson.error = error
+      return res.status(400).json(req.responseJson);
    }
 
 })
 
-router.post('/create', validateToken, async function(req,res,next){
+// Create Event
+router.post('/', validateToken, async function(req,res,next){
 
     //Create flags
     req.responseJson.isPromoter = false;
@@ -120,12 +124,13 @@ router.post('/create', validateToken, async function(req,res,next){
    }
 })
 
-router.get('/id/:id', validateToken, async  function(req, res, next) {
+//Get X event
+router.get('/', validateToken, async  function(req, res, next) {
     //Create flag
     req.responseJson.isEvent = false;
 
     //Get event
-    const event = await eventos.findByPk(req.params.id);
+    const event = await eventos.findByPk(req.body.codEvento);
 
     // Verify if event exists
     if(!event) return res.status(400).json(req.responseJson);
@@ -137,7 +142,7 @@ router.get('/id/:id', validateToken, async  function(req, res, next) {
 })
 
 //Update event information
-router.put('/id/:id', validateToken, async function(req, res, next) {
+router.put('/', validateToken, async function(req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
@@ -147,7 +152,7 @@ router.put('/id/:id', validateToken, async function(req, res, next) {
     req.responseJson.isUpdated = false;
 
     //Get event
-    const event = await eventos.findByPk(req.params.id);
+    const event = await eventos.findByPk(req.body.codEvento);
 
     // Verify if event exists
     if(!event) return res.status(400).json(req.responseJson);
@@ -181,8 +186,7 @@ router.put('/id/:id', validateToken, async function(req, res, next) {
         }, {
             where: {codEvento: req.params.id}
         });
-        req.responseJson.isUpdated = true;
-        return res.status(200).json(req.responseJson);
+        return res.status(200).json({isUpdated: true});
 
     } catch (error){
         req.responseJson.error = error
@@ -193,7 +197,7 @@ router.put('/id/:id', validateToken, async function(req, res, next) {
 })
 
 //Delete event
-router.delete('/id/:id', validateToken, async function(req, res,next) {
+router.delete('/', validateToken, async function(req, res,next) {
 
     //Create flags
     req.responseJson.isEvent = false;
@@ -201,7 +205,7 @@ router.delete('/id/:id', validateToken, async function(req, res,next) {
     req.responseJson.isDeleted = false;
 
     //Get event
-    const event = await eventos.findByPk(req.params.id);
+    const event = await eventos.findByPk(req.body.codEvento);
 
     // Verify if event exists
     if(!event) return res.status(400).json(req.responseJson);
