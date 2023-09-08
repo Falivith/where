@@ -5,6 +5,10 @@ const {validateToken} = require('../utils/JWT')
 const {eventUpdateValidation,eventValidation} = require('../utils/validation')
 
 
+// READ: GET interested and confirmed values
+//
+// JSON
+//  -codEvento_fk: id do evento
 router.get('/', validateToken, async function(req, res, next) {
 
     const part = await participam.findOne({where: {email_fk:req.username, codEvento_fk:req.body.codEvento_fk}});
@@ -25,6 +29,11 @@ router.get('/', validateToken, async function(req, res, next) {
 
 })
 
+// CREATE:Add user to "PARTICIPAM" table
+//
+//  JSON
+//  -codEvento_fk: id do evento
+//  -confirmado: true/false
 router.post('/', validateToken, async function(req, res,next) {
 
     // Create flags
@@ -64,7 +73,10 @@ router.post('/', validateToken, async function(req, res,next) {
 
 })
 
-
+// DELETE from "PARTICIPAM
+//
+//  JSON
+//  -codEvento_fk: id do evento
 router.delete('/', validateToken, async function(req,res,next) {
     try {
         await participam.destroy({
@@ -80,6 +92,11 @@ router.delete('/', validateToken, async function(req,res,next) {
     }
 })
 
+// Update "confirmado" from "PARTICIPAM
+//
+//  JSON
+//  -codEvento_fk: id do evento
+//  -confirmado: true/false
 router.put('/', validateToken, async function(req,res,next) {
 
     // Create flags

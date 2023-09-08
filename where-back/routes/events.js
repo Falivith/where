@@ -8,7 +8,9 @@ const {valid} = require("joi");
 const moment = require('moment');
 
 
-// Get all futere and current events
+// READ: Get all future and current events
+//
+// JSON INPUT - Not necessary
 router.get('/all', validateToken, async function(req,res,next) {
    try {
       // get all events from database
@@ -27,7 +29,11 @@ router.get('/all', validateToken, async function(req,res,next) {
    }
 });
 
-// Get subevents from x event
+// READ: Get subevents from x event
+//
+// JSON INPUT
+//
+// - {"codEvento_fk": "id do evento pai"}
 router.get('/sub', validateToken, async function(req, res, next) {
 
     //Create flag
@@ -55,7 +61,9 @@ router.get('/sub', validateToken, async function(req, res, next) {
 })
 
 
-// Get events where logged user is owner
+// READ: Get events where logged user is the creator/owner
+//
+// JSON INPUT NOT NECESSARY
 router.get('/user', validateToken, async function(req, res, next){
 
    // Create flag
@@ -78,7 +86,22 @@ router.get('/user', validateToken, async function(req, res, next){
 
 })
 
-// Create Event
+// CREATE: Create Event
+//
+// JSON INPUT - FALTA ADICIONAR FOTO
+//
+// {
+//          "descricao": "STRING",
+//          "nome": "STRING",
+//          "endereco": "STRING",
+//          "inicio": "DATE YYYY-MM-DD",
+//          "fim": "DATE YYYY-MM-DD",
+//          "codEvento_fk": "ID DO EVENTO PAI",
+//          "latitude_fk": "latitude 90.x ~~ -90.xx",
+//          "longitude_fk": "Longitude  180.x ~~ -180.xxx",
+//          "horario": "DATETIME YYYY-MM-DD HH:mm:ss",
+//          "estabelecimento": "STRING"
+//   }
 router.post('/', validateToken, async function(req,res,next){
 
     //Create flags
@@ -109,8 +132,8 @@ router.post('/', validateToken, async function(req,res,next){
          fim: req.body.fim,
          email_fk: req.username,
          codEvento_fk: req.body.codEvento_fk,
-         latitude_fk: req.body.latitude,
-         longitude_fk: req.body.longitude,
+         latitude_fk: req.body.latitude_fk,
+         longitude_fk: req.body.longitude_fk,
          horario: req.body.horario,
          estabelecimento: req.body.estabelecimento
       }).then(
@@ -124,7 +147,13 @@ router.post('/', validateToken, async function(req,res,next){
    }
 })
 
-//Get X event
+// READ: Get X event
+//
+// JSON INPUT
+//
+// {
+//      "codEvento" : "ID DO EVENTO"
+// }
 router.get('/', validateToken, async  function(req, res, next) {
     //Create flag
     req.responseJson.isEvent = false;
@@ -141,7 +170,20 @@ router.get('/', validateToken, async  function(req, res, next) {
     return res.status(200).json(event);
 })
 
-//Update event information
+//UPDATE: Update event information
+//
+// JSON INPUT
+// {
+//          "descricao": "STRING",
+//          "nome": "STRING",
+//          "endereco": "STRING",
+//          "inicio": "DATE YYYY-MM-DD",
+//          "fim": "DATE YYYY-MM-DD",
+//          "latitude_fk": "latitude 90.x ~~ -90.xx",
+//          "longitude_fk": "Longitude  180.x ~~ -180.xxx",
+//          "horario": "DATETIME YYYY-MM-DD HH:mm:ss",
+//          "estabelecimento": "STRING"
+//   }
 router.put('/', validateToken, async function(req, res, next) {
 
     //Create flags
@@ -197,6 +239,12 @@ router.put('/', validateToken, async function(req, res, next) {
 })
 
 //Delete event
+//
+// JSON INPUT
+//
+// {
+//      "codEvento": "ID DO EVENTO"
+// }
 router.delete('/', validateToken, async function(req, res,next) {
 
     //Create flags
@@ -226,14 +274,20 @@ router.delete('/', validateToken, async function(req, res,next) {
     }
 })
 
-//Get number of interested users
+// READ: Get number of interested users
+//
+// JSON INPUT
+//
+// {
+//      "codEvento": "ID DO EVENTO"
+// }
 router.get('/interested', validateToken, async function(req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
 
     //Get event
-    const event = await eventos.findByPk(req.params.id);
+    const event = await eventos.findByPk(req.body.codEvento);
 
     //Verify if event exists
     if(!event) return res.status(400).json(req.responseJson);
@@ -253,7 +307,13 @@ router.get('/interested', validateToken, async function(req, res, next) {
 
 })
 
-//Get number of confirmed users
+// READ: Get number of confirmed users
+//
+// JSON INPUT
+//
+// {
+//      "codEvento": "ID DO EVENTO"
+// }
 router.get('/confirmed', validateToken, async function(req, res, next) {
 
     //Create flags
