@@ -174,6 +174,7 @@ router.get('/', validateToken, async  function(req, res, next) {
 //
 // JSON INPUT
 // {
+//          "codEvento: "ID DO EVENTO",
 //          "descricao": "STRING",
 //          "nome": "STRING",
 //          "endereco": "STRING",
@@ -226,7 +227,7 @@ router.put('/', validateToken, async function(req, res, next) {
             horario: req.body.horario,
             estabelecimento: req.body.estabelecimento
         }, {
-            where: {codEvento: req.params.id}
+            where: {codEvento: req.body.codEvento}
         });
         return res.status(200).json({isUpdated: true});
 
@@ -261,11 +262,12 @@ router.delete('/', validateToken, async function(req, res,next) {
 
     //Verify if user is owner
     if(event.email_fk != req.username) return res.status(400).json(req.responseJson);
+    req.responseJson.isOwner = true;
 
     try {
         //Try to delete event
         await eventos.destroy({
-            where: { codEvento: req.params.id}
+            where: { codEvento: req.body.codEvento}
         });
         //Return success
         return res.status(200).json({isDeleted:true});
@@ -320,7 +322,7 @@ router.get('/confirmed', validateToken, async function(req, res, next) {
     req.responseJson.isEvent = false;
 
     //Get event
-    const event = await eventos.findByPk(req.params.id);
+    const event = await eventos.findByPk(req.body.codEvento);
 
     //Verify if event exists
     if(!event) return res.status(400).json(req.responseJson);

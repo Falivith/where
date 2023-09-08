@@ -33,7 +33,15 @@ router.get('/all', validateToken, async function(req, res, next) {
     }
 })
 
-// Create rating
+// CREATE: Create rating
+//
+// JSON INPUT -
+//
+// {
+//      "codEvento_fk": "id do evento que esta sendo avaliado",
+//      "rating": "nota 1 a 5",
+//      "comentario": "STRING"
+//  }
 router.post('/', validateToken, async function(req, res, next) {
 
 
@@ -66,7 +74,15 @@ router.post('/', validateToken, async function(req, res, next) {
     }
 })
 
-// Update rating
+// UPDATE: Update rating
+//
+// JSON INPUT -
+//
+// {
+//      "codEvento_fk": "id do evento que esta sendo avaliado",
+//      "rating": "nota 1 a 5",
+//      "comentario": "STRING"
+//  }
 router.put('/', validateToken, async function(req, res, next) {
 
     //Create flags
@@ -89,18 +105,29 @@ router.put('/', validateToken, async function(req, res, next) {
     req.responseJson.isEvent = true;
 
     try {
-        await avalia.destroy({where: {
-            codEvento_fk: req.body.codEvento_fk
+        await avalia.update({
+            rating: req.body.rating,
+            comentario: req.body.comentario
+        },{
+            where: {
+                codEvento_fk: req.body.codEvento_fk,
+                email_fk: req.username
             }
         })
-        return res.status(200).json({isDeleted:true})
+        return res.status(200).json({isUpdated:true})
     } catch(error) {
         return res.status(400).json(req.responseJson);
     }
     
 })
 
-//Find rating from x user and y event
+// READ: Find rating from logged user and x event
+//
+// JSON INPUT -
+//
+// {
+//      "codEvento_fk": "id do evento",
+//  }
 router.get('/', validateToken, async function(req, res, next) {
 
     try {
@@ -126,8 +153,27 @@ router.get('/', validateToken, async function(req, res, next) {
 })
 
 
-//Delete rating + comment
+// DELETE: Delete rating + comment
+//
+// JSON INPUT -
+//
+// {
+//      "codEvento_fk": "id do evento",
+//  }
 router.delete('/', validateToken, async function(req, res, next) {
+
+    //Create flag
+    req.responseJson.isEvent = false;
+    req.responseJson.isOwner = false;
+
+    // Verify if event exists
+    const event = eventos.findByPk(req.body.codEvento_fk);
+    if(!event) return res.status(400).json(req.responseJson);
+    req.responseJson.isEvent = true;
+
+    //Verify if user is owner
+    if(event.email_fk != req.username) return res.status(400).json(req.responseJson);
+    req.responseJson.isOwner = true;
 
     try {
         avalia.destroy({where: {
