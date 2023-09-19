@@ -1,6 +1,7 @@
 import Header from '../components/Header';
 import styles from './EventVision.module.css';
 import { Rating } from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
 
 function EventVision() {
 
@@ -9,7 +10,15 @@ function EventVision() {
         <Header toMap = { false } />
         <div className = { styles.eventVisionContainer }>
             <div>
-                <div className = { styles.evaluation }> <Rating type = {'large'}/></div>
+                <div className = { styles.evaluation }> 
+                    <Rating name="rating"
+                        value={1}
+                        precision={0.1}
+                        size="large"
+                        icon={<StarIcon style={{ color: 'green', fontSize: '4rem'}} />}
+                        emptyIcon={<StarIcon style={{ color: 'grey',  fontSize: '4rem' }} />}
+                    />
+                    </div>
                 <button className = { styles.confirmButton }>CONFIRMAR</button>
                 <button className = { styles.defineLembrete }>DEFINIR LEMBRETE</button>
             </div>

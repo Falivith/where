@@ -4,6 +4,9 @@ import email from '../assets/email_icon.png';
 import invisibleEye from '../assets/eye.png'
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { login } from '../services/login.ts';
+
+login()
 
 function Login() {
 
