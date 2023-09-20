@@ -47,7 +47,7 @@ router.post('/', async function(req, res,next){
             {maxAge: 60 * 60 * 24 * 1000})
             .json({isLogged: true});
     } catch(error) {
-        //Failed to create token
+        //Failed to create tokend
         req.responseJson.error = error
         return res.status(400).json(req.responseJson);
     }

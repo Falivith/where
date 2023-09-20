@@ -9,7 +9,7 @@ const {eventUpdateValidation,eventValidation} = require('../utils/validation')
 //
 // JSON
 //  {
-//      "codEvento_fk": "id do evento"
+//
 //  }
 router.get('/', validateToken, async function(req, res, next) {
 
