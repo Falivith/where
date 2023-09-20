@@ -205,6 +205,12 @@ router.put('/', validateToken, async function(req, res, next) {
     if(event.email_fk != req.username) return res.status(400).json(req.responseJson);
     req.responseJson.isOwner = true;
 
+    //Verify if user is a promoter
+    const isPromoter = await promoters.findOne({where :
+            {email_fk: req.username} });
+    if(!isPromoter) return res.status(400).json(req.responseJson);
+    req.responseJson.isPromoter = true;
+
 
     //Verify input
     const {error} = eventUpdateValidation(req.body);

@@ -24,7 +24,15 @@ router.get('/', validateToken, async function(req,res,next) {
     }
 })
 
-//Create new user
+// CREATE: Create new user
+//
+// JSON INPUT
+// {
+//     "email": "STRING",
+//     "password": "STRING",
+//     "name": "STRING,
+//     "date": "YYYY-MM-DD"
+// }
 router.post('/create', async function(req, res, next) {
 
     //Create flags
@@ -64,7 +72,12 @@ router.post('/create', async function(req, res, next) {
 
 })
 
-//Get list of confirmed events from logged user
+// READ: Get list of confirmed events from logged user
+//
+//
+//
+//
+//
 router.get('/confirmed', validateToken, async function(req, res, next) {
 
     try {
@@ -127,23 +140,30 @@ router.put('/edit', validateToken, async function(req,res,next){
 //Delete user
 router.delete('/', validateToken, async function(req, res, next) {
 
+    //Create flags
+    req.responseJson.isDeleted = false
+
    try {
        await usuarios.destroy({ where: {
            email_fk: req.username
            }
        })
-       return res.status(200).json({isDeleted:true});
+       return res.status(200).json({isDeleted: true});
    } catch (error) {
-       return res.status(400).json({isDeleted:false});
+       return res.status(400).json(req.responseJson);
    }
 })
 
 // Upgrade user to promoter
 router.post('/upgrade', validateToken, async function(req,res,next){
 
+    //Create flags
+    req.responseJson.isPromoter = true
+
     //Verify if user is already promoter
     const isPromoter = await promoters.findOne({where :{email_fk:req.username}})
-    if(isPromoter) return res.status(400).json("User already is a promoter.");
+    if(isPromoter) return res.status(400).json(req.responseJson);
+    req.responseJson.isPromoter = true
 
     try {
         await promoters.create({
@@ -151,7 +171,8 @@ router.post('/upgrade', validateToken, async function(req,res,next){
         });
         return res.status(200).json("User upgraded.")
     } catch (error){
-        return res.status(400).json(error);
+        req.responseJson.error = error
+        return res.status(400).json(req.responseJson);
     }
 })
 
