@@ -9,6 +9,7 @@ import Warning from './pages/Warning.tsx';
 import Date from './pages/Date.tsx';
 import Events from './pages/Events.tsx';
 import EventVision from './pages/EventVision.tsx';
+import EventForm from './pages/eventForm.tsx';
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: "/evento/:index",
     element: <EventVision/>
+  },
+  {
+    path: "/eventoForm/",
+    element: <EventForm/>
   }
 ])
 
