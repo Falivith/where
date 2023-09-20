@@ -11,9 +11,10 @@ const {eventUpdateValidation,eventValidation} = require('../utils/validation')
 //  {
 //
 //  }
-router.get('/', validateToken, async function(req, res, next) {
+router.get('/:id', validateToken, async function(req, res, next) {
 
-    const part = await participam.findOne({where: {email_fk:req.username, codEvento_fk:req.body.codEvento_fk}});
+
+    const part = await participam.findOne({where: {email_fk:req.username, codEvento_fk:req.params.id}});
     if(!part) return res.status(200).json({
         interested:false,
         confirmed:false
