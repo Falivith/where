@@ -13,6 +13,7 @@ export async function login(email: string, password: string) { // Tipando os par
   try {
     const response = await baseUrl.post('/login', credentials);
     console.log("Resposta do servidor:", response);
+    
     return response.data;
   } catch (error) {
     console.error("Erro ao fazer login:", error);

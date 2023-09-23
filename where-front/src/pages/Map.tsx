@@ -1,12 +1,13 @@
 import Header from '../components/Header';
 import styles from './Map.module.css';
 import MapComponent from '../components/MapComponent';
+//import Places from '../services/places';
 
 function Map() {
 
   return (
     <>
-        <Header/>
+        <Header toMap={false}/>
         <div className = { styles.mapContainer }>
           <div className = { styles.map }>
             <MapComponent/> 
