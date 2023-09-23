@@ -33,14 +33,14 @@ router.get('/all', validateToken, async function(req,res,next) {
 //
 // JSON INPUT
 //
-// - {"codEvento_fk": "id do evento pai"}
-router.get('/sub', validateToken, async function(req, res, next) {
+// -
+router.get('/sub/:id', validateToken, async function(req, res, next) {
 
     //Create flag
     req.responseJson.isEvent = false;
 
     //Get event
-    const event = await eventos.findByPk(req.body.codEvento_fk);
+    const event = await eventos.findByPk(req.params.id);
 
     // Verify if event exists
     if(!event) return res.status(400).json(req.responseJson);
@@ -48,7 +48,7 @@ router.get('/sub', validateToken, async function(req, res, next) {
 
     try {
         const listSubEvents = await eventos.findAll({
-            where : {codEvento_fk: req.body.codEvento_fk}
+            where : {codEvento_fk: req.params.id}
         });
         return res.status(200).json(listSubEvents);
 
@@ -64,7 +64,7 @@ router.get('/sub', validateToken, async function(req, res, next) {
 // READ: Get events where logged user is the creator/owner
 //
 // JSON INPUT NOT NECESSARY
-router.get('/user', validateToken, async function(req, res, next){
+router.get('/user/creator', validateToken, async function(req, res, next){
 
    // Create flag
    req.responseJson.listEvents = null;
@@ -149,17 +149,15 @@ router.post('/', validateToken, async function(req,res,next){
 
 // READ: Get X event
 //
-// JSON INPUT
 //
-// {
-//      "codEvento" : "ID DO EVENTO"
-// }
-router.get('/', validateToken, async  function(req, res, next) {
+//
+router.get('/:id', validateToken, async  function(req, res, next) {
     //Create flag
     req.responseJson.isEvent = false;
 
     //Get event
-    const event = await eventos.findByPk(req.body.codEvento);
+    const event = await eventos.findByPk(req.params.id);
+
 
     // Verify if event exists
     if(!event) return res.status(400).json(req.responseJson);
@@ -185,7 +183,7 @@ router.get('/', validateToken, async  function(req, res, next) {
 //          "horario": "DATETIME YYYY-MM-DD HH:mm:ss",
 //          "estabelecimento": "STRING"
 //   }
-router.put('/', validateToken, async function(req, res, next) {
+router.put('/:id', validateToken, async function(req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
@@ -195,7 +193,7 @@ router.put('/', validateToken, async function(req, res, next) {
     req.responseJson.isUpdated = false;
 
     //Get event
-    const event = await eventos.findByPk(req.body.codEvento);
+    const event = await eventos.findByPk(req.params.id);
 
     // Verify if event exists
     if(!event) return res.status(400).json(req.responseJson);
@@ -204,6 +202,12 @@ router.put('/', validateToken, async function(req, res, next) {
     //Verify if user is event owner
     if(event.email_fk != req.username) return res.status(400).json(req.responseJson);
     req.responseJson.isOwner = true;
+
+    //Verify if user is a promoter
+    const isPromoter = await promoters.findOne({where :
+            {email_fk: req.username} });
+    if(!isPromoter) return res.status(400).json(req.responseJson);
+    req.responseJson.isPromoter = true;
 
 
     //Verify input
@@ -227,7 +231,7 @@ router.put('/', validateToken, async function(req, res, next) {
             horario: req.body.horario,
             estabelecimento: req.body.estabelecimento
         }, {
-            where: {codEvento: req.body.codEvento}
+            where: {codEvento: req.params.id}
         });
         return res.status(200).json({isUpdated: true});
 
@@ -241,12 +245,9 @@ router.put('/', validateToken, async function(req, res, next) {
 
 //Delete event
 //
-// JSON INPUT
-//
-// {
-//      "codEvento": "ID DO EVENTO"
-// }
-router.delete('/', validateToken, async function(req, res,next) {
+// rota "/codEvento"
+
+router.delete('/:id', validateToken, async function(req, res,next) {
 
     //Create flags
     req.responseJson.isEvent = false;
@@ -254,7 +255,7 @@ router.delete('/', validateToken, async function(req, res,next) {
     req.responseJson.isDeleted = false;
 
     //Get event
-    const event = await eventos.findByPk(req.body.codEvento);
+    const event = await eventos.findByPk(req.params.id);
 
     // Verify if event exists
     if(!event) return res.status(400).json(req.responseJson);
@@ -267,7 +268,7 @@ router.delete('/', validateToken, async function(req, res,next) {
     try {
         //Try to delete event
         await eventos.destroy({
-            where: { codEvento: req.body.codEvento}
+            where: { codEvento: req.params.id}
         });
         //Return success
         return res.status(200).json({isDeleted:true});
@@ -283,23 +284,22 @@ router.delete('/', validateToken, async function(req, res,next) {
 // {
 //      "codEvento": "ID DO EVENTO"
 // }
-router.get('/interested', validateToken, async function(req, res, next) {
+router.get('/interested/:id', validateToken, async function(req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
 
     //Get event
-    const event = await eventos.findByPk(req.body.codEvento);
+    const event = await eventos.findByPk(req.params.id);
 
     //Verify if event exists
-    if(!event) return res.status(400).json(req.responseJson);
+    if(!event) return res.status(400).json(req.params.id);
     req.responseJson.isEvent = true;
 
     try {
-        const numberOfInterested = participam.count({where: {
-            codEvento_fk: req.body.codEvento_fk,
-            email_fk: req.username,
-            confirmado: false
+        const numberOfInterested = await participam.count({where: {
+            codEvento_fk: req.params.id,
+            confirmado: 0
             }})
         return res.status(200).json({numberOfInterested: numberOfInterested});
     } catch(error) {
@@ -316,22 +316,21 @@ router.get('/interested', validateToken, async function(req, res, next) {
 // {
 //      "codEvento": "ID DO EVENTO"
 // }
-router.get('/confirmed', validateToken, async function(req, res, next) {
+router.get('/confirmed/:id', validateToken, async function(req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
 
     //Get event
-    const event = await eventos.findByPk(req.body.codEvento);
+    const event = await eventos.findByPk(req.params.id);
 
     //Verify if event exists
-    if(!event) return res.status(400).json(req.responseJson);
+    if(!event) return res.status(400).json(req.params.id);
     req.responseJson.isEvent = true;
 
     try {
-        const numberOfInterested = participam.count({where: {
-                codEvento_fk: req.body.codEvento_fk,
-                email_fk: req.username,
+        const numberOfInterested = await participam.count({where: {
+                codEvento_fk: req.params.id,
                 confirmado: true
             }})
         return res.status(200).json({numberOfInterested: numberOfInterested});
