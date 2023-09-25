@@ -10,11 +10,107 @@
     gap: 40px;
 }
 
-.photoForm{
-    display: flex;
-}
-
 .textForm{
+    width: 100%;
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.textForm div{
+    width: 90%;
+}
+
+.photoForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.customFileInput {
+    display: flex;
+    border-radius: 20px; /* Reduzir a borda arredondada */
+    height: 190px;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease-in;
+    width: 60%; /* Fazer com que os itens ocupem 100% da largura do contêiner */
+    margin: 0 auto;
+    margin-top: 40px;
+    background: rgba(160, 160, 160, 0.35); /* Cor de fundo cinza com 50% de opacidade */
+    cursor: pointer; /* Adicione um cursor para indicar que é clicável */
+}
+
+.customFileInput span img{
+    height: 35px;
+}
+
+.customFileInput input[type="file"] {
+    display: none;
+    cursor: pointer;
+}
+
+/* Efeitos de hover e foco */
+.customFileInput:hover {
+    background-color: lightblue; /* Altere a cor ao passar o mouse sobre o botão */
+}
+
+.customFileInput:focus {
+    outline: none; /* Remova a borda de foco padrão do navegador */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Adicione uma sombra de foco */
+}
+
+/* Inputs */
+
+.inputContainer{
+    height: 100px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputLabel{
+    margin: 15px 2px;
+}
+
+.input{
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+    width: 100%;
+    padding-bottom: 8px;
+}
+
+.input::placeholder{
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+}
+
+.input:focus{
+    outline: none;
+    border-color: #ccc; 
+    box-shadow: none; 
+}
+
+.inputIconButton{
+    background-color: transparent;
+    border: none;
+    transition: .2s;
+    border-radius: 30% 30% 0 0;
+    border-bottom: 2px solid white;
+}
+
+.inputIcon{
+    border-bottom: 2px solid white;
+    padding-bottom: 8px;
+    padding-right: 5px;
+    height: 20px;
+}
+
+.inputOuterStyle{
+    display: flex;
 }

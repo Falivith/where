@@ -86,7 +86,7 @@ function Header(props: HeaderProps) {
       <FormControlLabel
         control = {
           <IOSSwitch sx={{ m: 1 }}
-            checked={checked} // Conectando ao estado checked
+            checked={checked}
             onChange={handleChange}
           />
         }
