@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { useState, useMemo } from 'react';
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import styles from './Places.module.css';
 
 import usePlacesAutocomplete, {
   getGeocode,
@@ -32,23 +33,23 @@ function Map() {
 
   return (
     <>
-      <div className = "places-container">
+      <div className = { styles.placesContainer }>
         <PlacesAutocomplete setSelected={setSelected}/>
       </div>
 
-      <GoogleMap
+      {/*<GoogleMap
         zoom = {10}
         center = {center}
         mapContainerClassName = "map-container"      
       >
 
       {selected && <Marker position = {selected} />}
-      </GoogleMap>
+      </GoogleMap>*/}
     </>
   );
 }
 
-const PlacesAutocomplete = ({ setSelected }) => {
+const PlacesAutocomplete = ({ setSelected }: any) => {
   const{
     ready,
     value,
@@ -67,11 +68,11 @@ const PlacesAutocomplete = ({ setSelected }) => {
   }
 
   return <Combobox onSelect={handleSelect}>
-    <ComboboxInput value = {value} onChange = {e => setValue(e.target.value)} disabled = {!ready} className = "combobox-input" placeholder = "Search an address"/>
+    <ComboboxInput value = {value} onChange = {e => setValue(e.target.value)} disabled = {!ready} className = { styles.comboboxInput } placeholder = "Pesquise um Local"/>
     <ComboboxPopover>
       <ComboboxList>
         {status === "OK" && data.map(({place_id, description}) => (
-          <ComboboxOption key = {place_id} value = {description}/>  
+          <ComboboxOption key = {place_id} value = {description} className = { styles.optionStyle }/>  
         ))}
       </ComboboxList>
     </ComboboxPopover>

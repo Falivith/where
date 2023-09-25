@@ -7,6 +7,7 @@ import calendar_icon from '../assets/calendar_icon.png';
 import clock_icon from '../assets/clock_icon.png';
 import person_icon from '../assets/person_icon.png';
 import PlusSymbol from '../assets/plusSymbol.png';
+import PlacesAutocomplete from '../components/Places'
 
 function EventForm() {
   const [backgroundImage, setBackgroundImage] = useState('none');
@@ -23,6 +24,10 @@ function EventForm() {
     } else {
       setBackgroundImage('none');
     }
+  };
+
+  const handleEventLocalChange = (selectedLocation: any) => {
+    setEventLocal(selectedLocation);
   };
 
   return (
@@ -71,21 +76,14 @@ function EventForm() {
             </div>
 
             <div className={styles.inputContainer}>
-              <label className={styles.inputLabel} htmlFor="eventLocal">
-                Local do Evento
-              </label>
-              <div className={styles.inputOuterStyle}>
-                <img className={styles.inputIcon} src={pinpoint_icon}/>
-                <input
-                  className={styles.input}
-                  placeholder="Adicione o local do evento"
-                  type="text"
-                  id="eventname"
-                  value={eventLocal}
-                  onChange={(e) => setEventLocal(e.target.value)}
-                />
-              </div>
-            </div>
+                <label className={styles.inputLabel} htmlFor="eventLocal">
+                    Local do Evento
+                </label>
+                <div className={styles.inputOuterStyle}>
+                    <img className={styles.inputIcon} src={pinpoint_icon} alt="Localização"/>
+                    <PlacesAutocomplete setSelected = {handleEventLocalChange} />
+                </div>
+                </div>
           </div>
 
           <div className={styles.rightColumn}>
