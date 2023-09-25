@@ -72,11 +72,8 @@ router.post('/create', async function(req, res, next) {
 
 })
 
-// READ: Get list of confirmed events from logged user
-//
-//
-//
-//
+// ROTA DE EVENTOS POSSUI UM MELHOR
+// READ: Get list of confirmed events from logged user ----- EVE
 //
 router.get('/confirmed', validateToken, async function(req, res, next) {
 
@@ -92,13 +89,17 @@ router.get('/confirmed', validateToken, async function(req, res, next) {
     }
 })
 
-
+// ROTA DE EVENTOS POSSUI UM MELHOR
 //Get list of confirmed events from logged user
 router.get('/interested', validateToken, async function(req, res, next) {
 
     try {
-        const codEvents = await participam.findAll({attributes: ['codEvento_fk'], where: {email_fk: req.username}});
 
+        const codEvents = await participam.findAll({attributes: ['codEvento_fk'], where: {email_fk: req.username}});
+        console.log(codEvents)
+        idArray = []
+        codEvents.forEach(eventId => idArray.push(eventId.dataValues.codEvento_fk))
+        console.log(idArray)
         const listEvents = await eventos.findAll({where: {codEvento_fk: codEvents, confirmado: false}});
         listEvents.email_fk = undefined;
 
@@ -158,7 +159,7 @@ router.delete('/', validateToken, async function(req, res, next) {
 router.post('/upgrade', validateToken, async function(req,res,next){
 
     //Create flags
-    req.responseJson.isPromoter = true
+    req.responseJson.isPromoter = false
 
     //Verify if user is already promoter
     const isPromoter = await promoters.findOne({where :{email_fk:req.username}})
@@ -176,6 +177,56 @@ router.post('/upgrade', validateToken, async function(req,res,next){
     }
 })
 
+
+
+
+router.get('/promoter', validateToken, async function(req, res, next) {
+    req.responseJson.isPromoter = false;
+
+    try {
+        const user = await promoters.findOne({where : {
+            email_fk: req.username
+            }})
+        if(!user) return res.status(200).json(req.responseJson);
+        req.responseJson.isPromoter = true;
+
+        return res.status(200).json(req.responseJson);
+    } catch(error) {
+        req.responseJson.error = error
+        return res.status(400).json(req.responseJson);
+    }
+})
+
+
+router.post('/downgrade', validateToken, async function(req,res,next){
+
+    //Create flags
+    req.responseJson.isPromoter = false;
+    req.responseJson.isDeleted = false;
+
+    //Verify if user is already promoter
+    const isPromoter = await promoters.findOne({where :{email_fk:req.username}})
+    if(isPromoter) return res.status(400).json(req.responseJson);
+    req.responseJson.isPromoter = true
+
+    try {
+
+        await promoters.delete({
+            email_fk: req.username
+        });
+        req.responseJson.isDeleted = true;
+
+        const listEvents = await eventos.delete({where :{
+            email_fk : req.username
+            }
+        })
+
+        return res.status(200).json("User .")
+    } catch (error){
+        req.responseJson.error = error
+        return res.status(400).json(req.responseJson);
+    }
+})
 
 
 module.exports = router;

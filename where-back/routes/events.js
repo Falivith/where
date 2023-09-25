@@ -1,13 +1,38 @@
 const express = require('express');
 const router = express.Router();
-const { participam,eventos, promoters,avalia} = require('../models');
-const {validateToken} = require('../utils/JWT')
+const { participam,eventos, promoters,avalia, usuarios} = require('../models');
+const {validateToken, createTokens} = require('../utils/JWT')
 const {eventUpdateValidation,eventValidation} = require('../utils/validation')
 const {Sequelize, Op} = require("sequelize");
 const {valid} = require("joi");
 const moment = require('moment');
 
+router.get('/teste', async function(req, res, next){
 
+    name = 'pessoa3@gmail.com'
+    try {
+        console.log("BBBBBBBBBBBBBBBBBB")
+        const user = await usuarios.findOne({
+            where: {email: name}
+        })
+        console.log("AAAAAAAAAAAAAAAAAAAAA")
+        console.log(user)
+        const accessToken = createTokens(user);
+
+        return res.status(200).cookie('where-access-token',
+            accessToken,
+            {maxAge: 60 * 60 * 24 * 1000})
+            .json({isLogged: true});
+    } catch(error) {
+        return res.status(400).json(error);
+    }
+
+
+
+    return res.status(200)
+        .cookie("Cookie-Teste", "Cookie-Token",{maxAge: 9000000000, httpOnly: true, secure: true })
+        .json("é isso")
+})
 // READ: Get all future and current events
 //
 // JSON INPUT - Not necessary
@@ -83,6 +108,47 @@ router.get('/user/creator', validateToken, async function(req, res, next){
        req.responseJson.error = error
       return res.status(400).json(req.responseJson);
    }
+
+})
+
+
+// Get events where user is interested or confirmed
+router.get('/user/participating', validateToken, async function(req, res, next){
+
+    // Create flag
+    req.responseJson.listEvents = null;
+
+    try {
+
+
+        //
+        const listId = await participam.findAll({
+            attributes: {exclude: ['email_fk', 'confirmado']},
+            where: {
+                email_fk: req.username
+            }
+        })
+
+        //
+        // listId.forEach(event => {
+        //     event.email_fk = undefined;
+        //     event.confirmado = undefined;
+        // });
+        //console.log(listId)
+        idArray = []
+        listId.forEach(entry => idArray.push(entry.dataValues.codEvento_fk))
+
+        const listEvents = await eventos.findAll({
+            where : {
+                codEvento: idArray
+            }
+        })
+        listEvents.forEach(event => event.email = undefined);
+        return res.status(200).json({listEvents: listEvents});
+    } catch (error) {
+        req.responseJson.error = error
+        return res.status(400).json(req.responseJson);
+    }
 
 })
 
