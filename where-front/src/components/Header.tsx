@@ -89,11 +89,13 @@ function Header(props: HeaderProps) {
     if (newPromoterState) {
       turnOnPromoter().then((response) => {
         alert("Você virou promoter com sucesso!");
+        window.location.reload();
         console.log(response);
       });
     } else {
       turnOffPromoter().then((response) => {
         alert("Você desvirou promoter com sucesso!");
+        window.location.reload();
         console.log(response);
       });
     }

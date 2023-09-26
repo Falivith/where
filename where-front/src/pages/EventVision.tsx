@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Header from '../components/Header';
 import styles from './EventVision.module.css';
+import stylesLembrete from './StylesLembrete.module.css';
 import { Rating } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import pinpoint_icon from '../assets/pinpoint_icon.png';
@@ -10,12 +11,23 @@ import people_icon from '../assets/people_icon.png';
 import EventosMocados from '../assets/EventosMocados';
 import { Link, useParams } from 'react-router-dom';
 import { useState } from 'react';
+import Modal from './Modal';
 
 function EventVision() {
 
     const [confirmado, setConfirmado] = useState(false);
     const [userRating, setUserRating] = useState(0);
     const [formData, setFormData] = useState({});
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
 
     const params = useParams();
     const id = params.index;
@@ -39,7 +51,7 @@ function EventVision() {
     const handleRatingChange = (newValue: any) => {
         setUserRating(newValue);
       };
-    
+
       const handleFormSubmit = (e: any) => {
         e.preventDefault();
         // Aqui você pode criar um objeto com todos os dados relevantes, incluindo a avaliação do usuário
@@ -51,9 +63,17 @@ function EventVision() {
         setFormData(dataToSend); // Isso é opcional, apenas para visualização
       };
     
-
     return (
         <>
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <h2 className = { stylesLembrete.description }>Para quanto tempo antes do evento você deseja configurar o lembrete? </h2>
+                <div className = { stylesLembrete.bottomContainer }>
+                    <button className = { stylesLembrete.confirmButton }>Confirmar</button>
+                    <input type="time" />
+                    <button onClick = {closeModal} className = { stylesLembrete.cancelButton }>Cancelar</button>
+                </div>
+            </Modal>
+
             <Header toMap={false} />
             <div className={styles.eventVisionContainer}>
                 <div className={styles.userEvaluationContainer}>
@@ -76,11 +96,11 @@ function EventVision() {
                     ) : (
                         <>
                             <button className={styles.cancelButton} onClick={alterarConfirmacao}> CANCELAR </button>
-                            <Link to = {"./"} className={styles.evalueButton} > AVALIAR EVENTO </Link>
+                            <Link key={id} to={`/evento/${id}/classify`} className={styles.evalueButton}>AVALIAR EVENTO</Link>
                         </>
                     )}
 
-                    <button className={styles.defineLembrete}>DEFINIR LEMBRETE</button>
+                    <button onClick={openModal} className={styles.defineLembrete}>DEFINIR LEMBRETE</button>
                 </div>
 
                 <div className={styles.eventInfoContianer}>

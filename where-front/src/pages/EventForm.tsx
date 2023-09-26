@@ -74,8 +74,10 @@ function EventForm() {
       }
     }
 
-    for (const pair of formData.entries()) {
-      console.log(pair[0] + ', ' + pair[1]);
+    console.log(formData);
+    
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
     }
 
     try {
