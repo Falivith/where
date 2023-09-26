@@ -11,7 +11,7 @@ const createTokens = (user) => {
 }
 
 const validateToken = (req, res, next) => {
-    const accessToken = req.cookies['where-access-token']
+    const accessToken = req.headers['where-access-token']
 
     //Verify if user has the cookie
     if (!accessToken) {

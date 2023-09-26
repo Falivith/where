@@ -42,6 +42,7 @@ router.post('/', async function(req, res,next){
     try {
         const accessToken = createTokens(user);
         return res.status(200)
+            .cookie('where-access-token', accessToken)
             .json({isLogged: true, cookieName: 'where-access-token', cookieInfo: accessToken});
     } catch(error) {
         //Failed to create tokend
