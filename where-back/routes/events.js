@@ -34,22 +34,22 @@ router.get('/teste', async function(req, res, next){
         .json("é isso")
 })
 
-// router.get('/name/:word', validateToken ,async function(req, res, next){
-//
-//     try{
-//         const listEventos = await eventos.findAll({
-//             attributes : {exclude: ['email_fk']},
-//             where : {
-//                 fim : {
-//                     [Op.gt] : moment().format("YYYY-MM-DD HH:mm:ss")
-//                 }
-//             }
-//         });
-//     } catch (error) {
-//         req.responseJson.error = error
-//         return res.status(400).json(req.responseJson)
-//     }
-// })
+router.get('/name/:word', validateToken ,async function(req, res, next){
+
+    try{
+        const listEventos = await eventos.findAll({
+            attributes : {exclude: ['email_fk']},
+            where : {
+                fim : {
+                    [Op.gt] : moment().format("YYYY-MM-DD HH:mm:ss")
+                }
+            }
+        });
+    } catch (error) {
+        req.responseJson.error = error
+        return res.status(400).json(req.responseJson)
+    }
+})
 
 
 
@@ -64,10 +64,10 @@ router.get('/all', validateToken, async function(req,res,next) {
       // get all events from database
       const listEventos = await eventos.findAll({
           attributes : {exclude: ['email_fk']},
-          where : {
-              fim : {
-                  [Op.gt] : moment().format("YYYY-MM-DD HH:mm:ss")
-              }
+          // where : {
+          //     fim : {
+          //         [Op.gt] : moment().format("YYYY-MM-DD HH:mm:ss")
+          //     }
           }
       });
       return res.status(200).json(listEventos);
