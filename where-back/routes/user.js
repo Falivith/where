@@ -159,11 +159,14 @@ router.delete('/', validateToken, async function(req, res, next) {
 router.post('/upgrade', validateToken, async function(req,res,next){
 
     //Create flags
-    req.responseJson.isPromoter = false
+    req.responseJson.isPromoter = null
 
     //Verify if user is already promoter
     const isPromoter = await promoters.findOne({where :{email_fk:req.username}})
-    if(isPromoter) return res.status(400).json(req.responseJson);
+    if(isPromoter) {
+        req.responseJson.alreadyPromoter = true
+        return res.status(400).json(req.responseJson);
+    }
     req.responseJson.isPromoter = true
 
     try {
