@@ -28,8 +28,10 @@ router.post('/teste3', validateToken, upload.any(), async function (req, res, ne
     req.responseJson.isValidated = false;
     req.responseJson.isCreated = false;
     req.body = convertStringNullsToNull(req.body)
-    console.log(req.body.codEvento_fk)
-    console.log(req.files[0].buffer)
+    console.log(req.files[0])
+    const jsonString = JSON.stringify(req.files[0]);
+    const buffer = Buffer.from(jsonString, 'utf-8');
+    console.log(buffer)
 
 
     // const utf8EncodedBuffer = Buffer.from(buffer, 'utf-8');
@@ -292,8 +294,7 @@ router.post('/', validateToken, upload.any(), async function (req, res, next) {
     req.responseJson.isValidated = false;
     req.responseJson.isCreated = false;
     req.body = convertStringNullsToNull(req.body)
-    console.log(req.body.codEvento_fk)
-    console.log(req.files)
+
     //Verfiy if user is promoter
     const isPromoter = await promoters.findOne({
         where:
