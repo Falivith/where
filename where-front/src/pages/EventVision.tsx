@@ -40,13 +40,14 @@ function EventVision() {
         return <div>Carregando...</div>;
     }
 
-    const eventoCorrespondente = EventosMocados.find(evento => evento.id === Number(id));
+    let eventoCorrespondente = EventosMocados.find(evento => evento.id === Number(id));
 
-    if (!eventoCorrespondente) {
-        return <div>Evento não encontrado</div>;
+    if (eventoCorrespondente === undefined) {
+        eventoCorrespondente = EventosMocados.find(evento => evento.id === 16);
     }
 
     console.log(eventoCorrespondente);
+    
 
     const handleRatingChange = (newValue: any) => {
         setUserRating(newValue);

@@ -36,19 +36,40 @@ function Events() {
   return (
     <>
       <Header toMap={true} />
+
       <div className={styles.gridContainer}>
+        
         <div className={styles.grid}>
+
           {EventosMocados.map((event: { id: number; img: string }) => (
             <Link key={event.id} to={`/evento/${event.id}`} className={styles.gridItem}>
               <img src={event.img} alt={`Evento ${event.id}`} />
             </Link>
           ))}
 
-          {events.map((event: { codEvento: number; img: string }) => (
-            <Link key={event.codEvento} to={`/evento/${event.codEvento}`} className={styles.gridItem}>
-              <img src={event.img} alt={`Evento ${event.id}`} />
-            </Link>
-          ))}
+          {events.map((event: {
+            codEvento: number;
+            foto: {
+              buffer: {
+                data: number[]; // This should be the type of your data array
+              };
+            };
+          }) => {
+            const uint8Array = new Uint8Array(event.foto.buffer.data);
+            const blob = new Blob([uint8Array], { type: "application/octet-stream" }); // Use an appropriate MIME type
+            const url = URL.createObjectURL(blob);
+
+            return (
+              <Link key={event.codEvento} to={`/evento/${event.codEvento}`} className={styles.gridItem}>
+                {event.foto && event.foto.buffer && (
+                  <img
+                    src={url}
+                    alt={`Evento ${event.codEvento}`}
+                  />
+                )}
+              </Link>
+            );
+          })}
 
           {isPromoter && (
             <Link to="/eventoForm/" className={styles.gridItemAdd}>

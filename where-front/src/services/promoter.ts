@@ -37,9 +37,7 @@ export async function turnOffPromoter() {
               'where-access-token': token,
           },
       });
-  
-      console.log("Resposta (TurnOffPromoter):", response.data);
-      
+
       return response.data;
     } catch (error) {
       console.error("Resposta (TurnOffPromoter):", error);
@@ -58,8 +56,6 @@ export async function promoterChecker() {
               'where-access-token': token,
           },
       });
-  
-      console.log("Resposta do servidor:", response);
       
       return response.data.isPromoter;
     } catch (error) {

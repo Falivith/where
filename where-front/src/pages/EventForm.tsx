@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import styles from './EventForm.module.css';
 import pinpoint_icon from '../assets/pinpoint_icon.png';
@@ -15,6 +16,8 @@ function EventForm() {
   const [formImage, setFormImage] = useState('');
   const [eventTime, setEventTime] = useState('');
   const [eventDate, setEventDate] = useState('');
+
+  const navigate = useNavigate();
 
   const [eventLocal, setEventLocal] = useState({
     address: '',
@@ -82,6 +85,7 @@ function EventForm() {
       const response = await createEvent(formData);
         if (response) {
             console.log(response);
+            navigate('/events');
         }
     } catch (error) {
         console.error("Erro ao criar evento: ", error);
