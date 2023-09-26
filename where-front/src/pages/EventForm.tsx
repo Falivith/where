@@ -63,8 +63,8 @@ function EventForm() {
     formData.append('nome', eventName);
     formData.append('horario', horarioFormat);
     formData.append('inicio', eventDate);
-    formData.append('latitude', eventLocal.lat)
-    formData.append('longitude', eventLocal.lng)
+    formData.append('latitude', eventLocal.lat); // Truncar para 10 caracteres
+    formData.append('longitude', eventLocal.lng);
     formData.append('endereco', eventLocal.address)
     formData.append('foto', formImage)
     formData.append('fim', 'null')
