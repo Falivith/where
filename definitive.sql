@@ -6,7 +6,7 @@ USE base_de_dados;
 CREATE TABLE `Usuarios` (
   `cpf` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `nome` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `foto` blob,
+  `foto` LONGBLOB,
   `descricao` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `dataNasc` date NOT NULL,
   `email` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE `Eventos` (
   `descricao` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `nome` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `endereco` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `foto` longblob,
+  `foto` LONGBLOB,
   `inicio` date NOT NULL,
   `fim` date DEFAULT NULL,
   `horario` datetime NOT NULL,
