@@ -218,7 +218,7 @@ router.post('/downgrade', validateToken, async function(req,res,next){
             }
         })
 
-        return res.status(200).json({isDrowngraded: true})
+        return res.status(200).json({isDowngraded: true})
     } catch (error){
         req.responseJson.error = error
         return res.status(400).json(req.responseJson);
