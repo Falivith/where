@@ -24,3 +24,21 @@ export async function createEvent(formdata: FormData) {
     throw error;
   }
 }
+
+export async function getEvents() {
+  try {
+
+    const token = Cookies.get('where-access-token');
+
+    const response = await baseUrl.get('/events/all', {
+      headers: {
+        'where-access-token': token,
+      },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao Pegar eventos ", error);
+    throw error;
+  }
+}

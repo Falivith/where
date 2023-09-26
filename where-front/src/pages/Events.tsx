@@ -5,9 +5,27 @@ import { Link } from 'react-router-dom';
 import EventosMocados from '../assets/EventosMocados';
 import PlusSymbol from '../assets/plusSymbol.png';
 import { promoterChecker } from '../services/promoter';
+import { getEvents } from '../services/event';
 
 function Events() {
   const [isPromoter, setIsPromoter] = useState(false);
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+      // Função para buscar eventos
+      async function fetchEvents() {
+        try {
+          const response = await getEvents();
+          setEvents(response); // Define o estado com os eventos obtidos
+          console.log(response); // Imprime o resultado no console
+        } catch (error) {
+          console.error('Erro ao buscar eventos:', error);
+        }
+      }
+
+      fetchEvents(); // Chama a função de busca de eventos ao montar o componente
+    }, []);
 
   useEffect(() => {
     promoterChecker().then((result) => {
