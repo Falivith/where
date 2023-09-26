@@ -25,6 +25,9 @@ app.use(cors({
   credentials: true, // Se você estiver usando cookies ou autenticação
 }));
 
+//form
+app.use(express.urlencoded({ extended: true }))
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
