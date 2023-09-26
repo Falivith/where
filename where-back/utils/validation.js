@@ -67,7 +67,8 @@ const eventValidation = data => {
             .integer()
             .optional()
             .min(0)
-            .allow(null),
+            .allow(null)
+            .empty(null),
         foto: Joi
             .allow(null),
         nome: Joi.string()
@@ -186,6 +187,14 @@ const avaliaValidation = data => {
             .allow(null)
     })
     return schema.validate(data);
+}
+function convertStringNullsToNull(obj) {
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key) && obj[key] === "null") {
+            obj[key] = null;
+        }
+    }
+    return obj;
 }
 
 module.exports.registerValidation = registerValidation;
