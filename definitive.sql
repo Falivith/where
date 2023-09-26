@@ -30,7 +30,7 @@ CREATE TABLE `Eventos` (
   `descricao` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `nome` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `endereco` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `foto` blob,
+  `foto` longblob,
   `inicio` date NOT NULL,
   `fim` date DEFAULT NULL,
   `horario` datetime NOT NULL,

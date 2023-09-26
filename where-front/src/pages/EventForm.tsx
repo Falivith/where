@@ -70,17 +70,6 @@ function EventForm() {
     formData.append('codEvento_fk', 'null')
     formData.append('estabelecimento', 'null')
 
-    if (formImage) {
-      formData.append('foto', formImage, 'backgroundImage.png');
-  
-      // Verifique se o Blob foi criado com sucesso
-      if (formImage.size > 0) {
-        console.log('Blob criado com sucesso');
-      } else {
-        console.log('Erro ao criar o Blob');
-      }
-    }
-
     console.log(formData);
     
     for (const [key, value] of formData.entries()) {
