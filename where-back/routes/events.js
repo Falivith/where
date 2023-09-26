@@ -167,7 +167,6 @@ router.get('/all', validateToken, async function (req, res, next) {
                 const utf8EncodedBuffer = Buffer.from(evento.foto, 'utf-8');
                 const decodedString = utf8EncodedBuffer.toString('utf-8');
                 evento.foto = JSON.parse(decodedString)
-                evento.foto = utf8EncodedBuffer
             }
         })
         return res.status(200).json(listEventos);
