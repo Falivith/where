@@ -10,15 +10,36 @@
     gap: 40px;
 }
 
+.submitButton{
+    margin-top: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    background-color: #C10C99;
+    color: white;
+    border: none;
+    width: 70%;
+    border-radius: 20px;
+    height: 40px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.submitButton:hover{
+    background-color: #660651;
+    transition: .2s;
+}
+
 .textForm{
     width: 100%;
+    gap: 10%;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
 }
 
 .textForm div{
-    width: 90%;
+    width: 100%;
 }
 
 .photoForm {
@@ -113,4 +134,18 @@
 
 .inputOuterStyle{
     display: flex;
+}
+
+.leftColumn, .rightColumn{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.leftColumn{
+    margin-left: 8%;
+}
+
+.rightColumn{
+    margin-right: 8%;
 }

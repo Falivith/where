@@ -50,7 +50,7 @@ function Map(props: any) {
   );
 }
 
-const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({ setSelected, selected }) => {
+const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({ setSelected }) => {
   const{
     ready,
     value,

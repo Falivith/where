@@ -16,7 +16,7 @@ function EventForm() {
   const [eventLocal, setEventLocal] = useState(null);
   const [eventName, setEventName] = useState('');
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: any) => {
     const file = e.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
@@ -35,6 +35,21 @@ function EventForm() {
       console.log('Dados do Local:', eventLocal);
     }
   }, [eventLocal]);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+        const response = await login(emailValue, passwordValue);
+        if (response && response.isLogged) {
+            Cookies.set(response.cookieName, response.cookieInfo)
+            console.log(Cookies.get(response.cookieName));
+            
+            navigate('/map');
+        }
+    } catch (error) {
+        console.error("Erro ao fazer login:", error);
+    }
+  };
 
   return (
     <>
@@ -126,6 +141,8 @@ function EventForm() {
             </div>
           </div>
         </div>
+
+        <button type="submit" onClick = {handleSubmit} className={styles.submitButton}>Adicionar Evento</button>
       </div>
     </>
   );
