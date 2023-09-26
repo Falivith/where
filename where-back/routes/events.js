@@ -292,8 +292,7 @@ router.post('/', validateToken, upload.any(), async function (req, res, next) {
     req.responseJson.isValidated = false;
     req.responseJson.isCreated = false;
     req.body = convertStringNullsToNull(req.body)
-    console.log(req.body.codEvento_fk)
-    console.log(req.files)
+
     //Verfiy if user is promoter
     const isPromoter = await promoters.findOne({
         where:
