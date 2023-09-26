@@ -94,11 +94,11 @@ const eventValidation = data => {
             .min(0)
             .max(65535)
             .allow(null),
-        latitude: Joi.string().regex(/^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$/, 'numbers').max(12).min(12)
+        latitude_fk: Joi.string().regex(/^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$/, 'numbers').max(12).min(12)
             .min(8)
             .max(32)
             .allow(null),
-        longitude: Joi.string().regex(/^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$/, 'numbers').max(12).min(12)
+        longitude_fk: Joi.string().regex(/^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$/, 'numbers').max(12).min(12)
             .min(8)
             .max(32)
             .allow(null),
@@ -137,11 +137,11 @@ const eventUpdateValidation = data => {
             .min(0)
             .max(65535)
             .allow(null),
-        latitude: Joi.string().regex(/^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$/, 'numbers').max(12).min(12)
+        latitude_fk: Joi.string().regex(/^(\+|-)?(?:90(?:(?:\.0{1,8})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,8})?))$/, 'numbers').max(12).min(12)
             .min(8)
             .max(32)
             .allow(null),
-        longitude: Joi.string().regex(/^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$/, 'numbers').max(12).min(12)
+        longitude_fk: Joi.string().regex(/^(\+|-)?(?:180(?:(?:\.0{1,8})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,8})?))$/, 'numbers').max(12).min(12)
             .min(8)
             .max(32)
             .allow(null),
