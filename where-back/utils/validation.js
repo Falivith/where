@@ -69,8 +69,7 @@ const eventValidation = data => {
             .min(0)
             .allow(null),
         foto: Joi
-            .allow(null)
-            .required(),
+            .allow(null),
         nome: Joi.string()
             .min(6)
             .max(100)
@@ -118,8 +117,7 @@ const eventUpdateValidation = data => {
             .max(100)
             .required(),
         foto: Joi
-            .allow(null)
-            .required(),
+            .allow(null),
         endereco: Joi.string()
             .min(6)
             .max(100)
