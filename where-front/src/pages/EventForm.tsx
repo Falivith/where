@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import styles from './EventForm.module.css';
 import pinpoint_icon from '../assets/pinpoint_icon.png';
@@ -9,7 +9,6 @@ import person_icon from '../assets/person_icon.png';
 import PlusSymbol from '../assets/plusSymbol.png';
 import Map from '../components/Places';
 import { createEvent } from '../services/event';
-import { create } from '@mui/material/styles/createTransitions';
 
 function EventForm() {
   const [backgroundImage, setBackgroundImage] = useState('none');
@@ -41,22 +40,30 @@ function EventForm() {
     setEventLocal(data);
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (eventLocal.address !== '') {
       console.log('Dados do Local:', eventLocal);
     }
   }, [eventLocal]);
+
+  useEffect(() => {
+      console.log('Dados do Tempo', eventTime, typeof(eventTime));
+  }, [eventTime]);*/
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
 
     const formData = new FormData();
 
+    const timeFormat = eventTime.concat(":00");
+    const horarioFormat = eventDate.concat(" " + timeFormat);
+    console.log(horarioFormat);
+    
     formData.append('nome', eventName);
-    formData.append('horario', eventTime);
+    formData.append('horario', horarioFormat);
     formData.append('inicio', eventDate);
-    formData.append('latitude_fk', eventLocal.lat)
-    formData.append('longitude_fk', eventLocal.lng)
+    formData.append('latitude', eventLocal.lat)
+    formData.append('longitude', eventLocal.lng)
     formData.append('endereco', eventLocal.address)
     formData.append('foto', 'null')
     formData.append('fim', 'null')
