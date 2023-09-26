@@ -5,6 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import styles from './Header.module.css';
+import { testRoute, TESTEROTASAFONSO } from '../services/login';
 
 const theme = createTheme({
   palette: {
@@ -78,6 +79,8 @@ function Header(props: HeaderProps) {
   const handleChange = () => {
     setChecked(!checked);
   };
+
+  console.log(testRoute(), "alo");
 
   return (
     <ThemeProvider theme={theme}>

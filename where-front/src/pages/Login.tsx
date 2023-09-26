@@ -5,6 +5,7 @@ import email from '../assets/email_icon.png';
 import invisibleEye from '../assets/eye.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../services/login.ts';
+import Cookies from 'js-cookie';
 
 function Login() {
 
@@ -23,6 +24,9 @@ function Login() {
         try {
             const response = await login(emailValue, passwordValue);
             if (response && response.isLogged) {
+                Cookies.set(response.cookieName, response.cookieInfo)
+                console.log(Cookies.get(response.cookieName));
+                
                 navigate('/map');
             }
         } catch (error) {
