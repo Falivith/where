@@ -170,7 +170,7 @@ router.post('/upgrade', validateToken, async function(req,res,next){
         await promoters.create({
             email_fk: req.username
         });
-        return res.status(200).json("User upgraded.")
+        return res.status(200).json({isUpgraded: true})
     } catch (error){
         req.responseJson.error = error
         return res.status(400).json(req.responseJson);
@@ -206,17 +206,16 @@ router.post('/downgrade', validateToken, async function(req,res,next){
 
     //Verify if user is already promoter
     const isPromoter = await promoters.findOne({where :{email_fk:req.username}})
-    if(isPromoter) return res.status(400).json(req.responseJson);
+    if(!isPromoter) return res.status(400).json(req.responseJson);
     req.responseJson.isPromoter = true
 
     try {
-
-        await promoters.delete({
-            email_fk: req.username
+        console.log("1")
+        await promoters.destroy({ where : {email_fk: req.username}
         });
         req.responseJson.isDeleted = true;
-
-        const listEvents = await eventos.delete({where :{
+        console.log("2")
+        await eventos.destroy({where :{
             email_fk : req.username
             }
         })
