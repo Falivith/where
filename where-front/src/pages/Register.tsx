@@ -37,7 +37,7 @@ function Register() {
         try {
             const response = await signup(usernameValue, emailValue, passwordValue);
             if (response && response.isCreated) {
-                navigate('/map');
+                navigate('/');
             }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {

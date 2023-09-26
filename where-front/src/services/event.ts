@@ -16,11 +16,11 @@ export async function createEvent(formdata: FormData) {
       },
     });
 
-    console.log("Resposta do servidor:", response);
+    console.log("Res (EventCreate): ", response);
     
     return response.data;
   } catch (error) {
-    console.error("Erro ao fazer login:", error);
+    console.error("Erro ao criar evento: ", error);
     throw error;
   }
 }

@@ -40,7 +40,7 @@ function EventForm() {
     setEventLocal(data);
   };
 
-  /*useEffect(() => {
+  useEffect(() => {
     if (eventLocal.address !== '') {
       console.log('Dados do Local:', eventLocal);
     }
@@ -48,7 +48,8 @@ function EventForm() {
 
   useEffect(() => {
       console.log('Dados do Tempo', eventTime, typeof(eventTime));
-  }, [eventTime]);*/
+  }, [eventTime]);
+
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -62,8 +63,8 @@ function EventForm() {
     formData.append('nome', eventName);
     formData.append('horario', horarioFormat);
     formData.append('inicio', eventDate);
-    formData.append('latitude', eventLocal.lat)
-    formData.append('longitude', eventLocal.lng)
+    formData.append('latitude_fk', eventLocal.lat)
+    formData.append('longitude_fk', eventLocal.lng)
     formData.append('endereco', eventLocal.address)
     formData.append('foto', 'null')
     formData.append('fim', 'null')
