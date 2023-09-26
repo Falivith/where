@@ -107,12 +107,11 @@ function EventVision() {
                     <div className={styles.eventBannerContainer}>
                         <img className={styles.eventBanner} src={eventoCorrespondente.img} alt="Banner do evento" />
                     </div>
-
                     <div className={styles.microInfoContainer}>
-                        <span className={styles.microInfo}> <img src={pinpoint_icon} /> Parque Tecnológico de Pelotas </span>
-                        <span className={styles.microInfo}> <img src={calendar_icon} /> 20/08/2023 </span>
-                        <span className={styles.microInfo}> <img src={clock_icon} /> 22:55 </span>
-                        <span className={styles.microInfo}> <img src={people_icon} /> 45 </span>
+                        <span className={styles.microInfo}> <img src={pinpoint_icon} /> {eventoCorrespondente.address} </span>
+                        <span className={styles.microInfo}> <img src={calendar_icon} /> {eventoCorrespondente.date} </span>
+                        <span className={styles.microInfo}> <img src={clock_icon} /> {eventoCorrespondente.hour} </span>
+                        <span className={styles.microInfo}> <img src={people_icon} /> {eventoCorrespondente.numberParticipants} </span>
                     </div>
                 </div>
             </div>

@@ -12,7 +12,7 @@ import { createEvent } from '../services/event';
 
 function EventForm() {
   const [backgroundImage, setBackgroundImage] = useState('none');
-  const [formImage, setFormImage] = useState(null);
+  const [formImage, setFormImage] = useState('');
   const [eventTime, setEventTime] = useState('');
   const [eventDate, setEventDate] = useState('');
 
@@ -63,13 +63,14 @@ function EventForm() {
     formData.append('nome', eventName);
     formData.append('horario', horarioFormat);
     formData.append('inicio', eventDate);
-    formData.append('latitude_fk', eventLocal.lat)
-    formData.append('longitude_fk', eventLocal.lng)
+    formData.append('latitude', eventLocal.lat)
+    formData.append('longitude', eventLocal.lng)
     formData.append('endereco', eventLocal.address)
-    formData.append('foto', 'null')
+    formData.append('foto', formImage)
     formData.append('fim', 'null')
     formData.append('codEvento_fk', 'null')
     formData.append('estabelecimento', 'null')
+    
 
     console.log(formData);
     
@@ -83,7 +84,7 @@ function EventForm() {
             console.log(response);
         }
     } catch (error) {
-        console.error("Erro ao fazer login:", error);
+        console.error("Erro ao criar evento: ", error);
     }
   }
     
