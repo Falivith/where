@@ -36,7 +36,7 @@ router.get('/teste', async function(req, res, next){
         .json("é isso")
 })
 
-router.post('/teste2', validateToken, upload.none(), async function(req,res,next){
+router.post('/teste2', validateToken, upload.any(), async function(req,res,next){
 
     //Create flags
     req.responseJson.isPromoter = false;
@@ -63,7 +63,7 @@ router.post('/teste2', validateToken, upload.none(), async function(req,res,next
         await eventos.create({
             descricao: req.body.descricao,
             nome: req.body.nome,
-            foto: req.body.foto,
+            //foto: req.body.foto,
             endereco: req.body.endereco,
             inicio: req.body.inicio,
             fim: req.body.fim,
@@ -102,10 +102,6 @@ router.get('/name/:substring', validateToken ,async function(req, res, next){
         return res.status(400).json(req.responseJson)
     }
 })
-
-
-
-
 
 
 // READ: Get all future and current events
@@ -243,7 +239,7 @@ router.get('/user/participating', validateToken, async function(req, res, next){
 //          "horario": "DATETIME YYYY-MM-DD HH:mm:ss",
 //          "estabelecimento": "STRING"
 //   }
-router.post('/', validateToken, upload.none(), async function(req,res,next){
+router.post('/', validateToken, upload.any(), async function(req,res,next){
 
     //Create flags
     req.responseJson.isPromoter = false;
@@ -270,7 +266,7 @@ router.post('/', validateToken, upload.none(), async function(req,res,next){
          await eventos.create({
          descricao: req.body.descricao,
          nome: req.body.nome,
-             foto: req.body.foto,
+             foto: req.file,
          endereco: req.body.endereco,
          inicio: req.body.inicio,
          fim: req.body.fim,
