@@ -66,7 +66,7 @@ function EventVision() {
 
                 <div className={styles.eventInfoContianer}>
                     <div className={styles.eventBannerContainer}>
-                        <img className={styles.eventBanner} src={opiniao} alt="Banner do evento" />
+                        <img className={styles.eventBanner} src={eventoCorrespondente.img} alt="Banner do evento" />
                     </div>
 
                     <div className={styles.microInfoContainer}>

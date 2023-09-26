@@ -11,7 +11,7 @@ export async function turnOnPromoter() {
 
     const token = Cookies.get('where-access-token');
 
-    const response = await baseUrl.post('/user/upgrade', {
+    const response = await baseUrl.post('/user/upgrade', null, {
         headers: {
             'where-access-token': token,
         },
@@ -19,7 +19,7 @@ export async function turnOnPromoter() {
 
     console.log("Resposta do servidor:", response);
     
-    return response.data;
+    return response.data.isPromoter;
   } catch (error) {
     console.error("Erro ao se tornar promoter.", error);
     throw error;
