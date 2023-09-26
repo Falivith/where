@@ -43,7 +43,13 @@ function Events() {
               <img src={event.img} alt={`Evento ${event.id}`} />
             </Link>
           ))}
-          {/* Mostrar o Link para eventoForm apenas se isPromoter for true */}
+
+          {events.map((event: { codEvento: number; img: string }) => (
+            <Link key={event.codEvento} to={`/evento/${event.codEvento}`} className={styles.gridItem}>
+              <img src={event.img} alt={`Evento ${event.id}`} />
+            </Link>
+          ))}
+
           {isPromoter && (
             <Link to="/eventoForm/" className={styles.gridItemAdd}>
               <img src={PlusSymbol} />
