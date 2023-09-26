@@ -210,17 +210,15 @@ router.post('/downgrade', validateToken, async function(req,res,next){
     req.responseJson.isPromoter = true
 
     try {
-        console.log("1")
         await promoters.destroy({ where : {email_fk: req.username}
         });
         req.responseJson.isDeleted = true;
-        console.log("2")
         await eventos.destroy({where :{
             email_fk : req.username
             }
         })
 
-        return res.status(200).json("User .")
+        return res.status(200).json({isDowngraded: true})
     } catch (error){
         req.responseJson.error = error
         return res.status(400).json(req.responseJson);
