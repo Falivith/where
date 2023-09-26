@@ -197,6 +197,11 @@ router.get('/sub/:id', validateToken, async function (req, res, next) {
         const listSubEvents = await eventos.findAll({
             where: {codEvento_fk: req.params.id}
         });
+        listSubEvents.each(event => {
+            if(event.foto) {
+                event.foto = bindecode(event.foto)
+            }
+        })
         return res.status(200).json(listSubEvents);
 
     } catch (error) {
@@ -357,6 +362,10 @@ router.get('/:id', validateToken, async function (req, res, next) {
     // Verify if event exists
     if (!event) return res.status(400).json(req.responseJson);
     req.responseJson.isEvent = true;
+
+    // const utf8EncodedBuffer = Buffer.from(event.foto, 'utf-8');
+    // const decodedString = utf8EncodedBuffer.toString('utf-8');
+    event.foto = bindecode(event.foto)//JSON.parse(decodedString)
 
     //Remove email value from response
     event.email_fk = undefined;
@@ -548,6 +557,12 @@ function convertStringNullsToNull(obj) {
         }
     }
     return obj;
+}
+
+function bindecode(obj) {
+    const utf8EncodedBuffer = Buffer.from(obj, 'utf-8');
+    const decodedString = utf8EncodedBuffer.toString('utf-8');
+    return JSON.parse(decodedString)
 }
 
 module.exports = router;
