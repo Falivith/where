@@ -5,7 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import styles from './Header.module.css';
-import { turnOnPromoter, promoterChecker, turnOffPromoter } from '../services/promoter';
+import { promoterChecker, turnOffPromoter, turnOnPromoter } from '../services/promoter';
 
 const theme = createTheme({
   palette: {
@@ -77,36 +77,25 @@ function Header(props: HeaderProps) {
   const [isPromoter, setIsPromoter] = useState(false);
 
   useEffect(() => {
-    const checkPromoter = async () => {
-      const promoterStatus = await promoterChecker();
-      setIsPromoter(promoterStatus);
-    };
-
-    checkPromoter();
+    promoterChecker().then((result) => {
+      setIsPromoter(result);
+    });
   }, []);
 
-  useEffect(() => {
-    console.log(isPromoter);
-  }, [isPromoter]);
+  const handleChange = () => {
+    const newPromoterState = !isPromoter;
+    setIsPromoter(newPromoterState);
 
-  const handleChange = async () => {
-
-    let response;
-
-    try {
-      if (isPromoter) {
-        response = await turnOffPromoter();
-        if (response) {
-          setIsPromoter(false);
-        }
-      } else {
-        response = await turnOnPromoter();
-        if (response) {
-          setIsPromoter(true);
-        }
-      }
-    } catch (error) {
-      console.error("Erro na solicitação HTTP:", error);
+    if (newPromoterState) {
+      turnOnPromoter().then((response) => {
+        alert("Você virou promoter com sucesso!");
+        console.log(response);
+      });
+    } else {
+      turnOffPromoter().then((response) => {
+        alert("Você desvirou promoter com sucesso!");
+        console.log(response);
+      });
     }
   };
 

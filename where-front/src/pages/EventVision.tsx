@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Header from '../components/Header';
 import styles from './EventVision.module.css';
 import { Rating } from '@mui/material';
@@ -13,6 +14,9 @@ import { useState } from 'react';
 function EventVision() {
 
     const [confirmado, setConfirmado] = useState(false);
+    const [userRating, setUserRating] = useState(0);
+    const [formData, setFormData] = useState({});
+
     const params = useParams();
     const id = params.index;
     
@@ -31,6 +35,21 @@ function EventVision() {
     }
 
     console.log(eventoCorrespondente);
+
+    const handleRatingChange = (newValue: any) => {
+        setUserRating(newValue);
+      };
+    
+      const handleFormSubmit = (e: any) => {
+        e.preventDefault();
+        // Aqui você pode criar um objeto com todos os dados relevantes, incluindo a avaliação do usuário
+        const dataToSend = {
+          rating: userRating,
+          // Adicione outros campos do formulário, se houver
+        };
+        // Agora você pode enviar 'dataToSend' para o servidor ou realizar outra ação necessária
+        setFormData(dataToSend); // Isso é opcional, apenas para visualização
+      };
     
 
     return (
@@ -38,16 +57,17 @@ function EventVision() {
             <Header toMap={false} />
             <div className={styles.eventVisionContainer}>
                 <div className={styles.userEvaluationContainer}>
-                    <div className={styles.evaluation}>
-                        <Rating
-                            name="rating"
-                            value={1}
-                            precision={0.1}
-                            size="large"
-                            icon={<StarIcon style={{ color: '#34A853', fontSize: '4rem' }} />}
-                            emptyIcon={<StarIcon style={{ color: 'grey', fontSize: '4rem' }} />}
-                        />
-                    </div>
+                <div className={styles.evaluation}>
+                    <Rating
+                    name="rating"
+                    value={userRating} // Use o estado userRating para exibir a avaliação do usuário
+                    precision={0.1}
+                    size="large"
+                    onChange={(event, newValue) => handleRatingChange(newValue)} // Atualize a avaliação do usuário quando ela mudar
+                    icon={<StarIcon style={{ color: '#2ECA45', fontSize: '4rem' }} />}
+                    emptyIcon={<StarIcon style={{ color: 'grey', fontSize: '4rem' }} />}
+                    />
+                </div>
 
                     {!confirmado ? (
                         <button className={styles.confirmButton} onClick={alterarConfirmacao}>
