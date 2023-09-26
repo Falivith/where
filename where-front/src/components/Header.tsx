@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import styles from './Header.module.css';
-import { testRoute, TESTEROTASAFONSO } from '../services/login';
+import { turnOnPromoter, promoterChecker } from '../services/promoter';
 
 const theme = createTheme({
   palette: {
@@ -70,42 +70,47 @@ const IOSSwitch = styled((props: SwitchProps) => (
 }));
 
 interface HeaderProps {
-  toMap: boolean; // Declare a prop called "toMap" with type boolean
+  toMap: boolean;
 }
 
 function Header(props: HeaderProps) {
-  const [checked, setChecked] = useState(false);
+  const [isPromoter, setIsPromoter] = useState(false);
 
-  const handleChange = () => {
-    setChecked(!checked);
+  useEffect(() => {
+    const checkPromoter = async () => {
+      const promoterStatus = await promoterChecker();
+      setIsPromoter(promoterStatus);
+    };
+
+    checkPromoter();
+  }, []);
+
+  const handleChange = async () => {
+    const response = await turnOnPromoter();
+    if (response) {
+      setIsPromoter(!isPromoter);
+    }
   };
-
-  //console.log(testRoute(), "alo");
 
   return (
     <ThemeProvider theme={theme}>
       <div className={styles.backgroundHeader}>
+        <FormControlLabel
+          control={
+            <IOSSwitch sx={{ m: 1 }} checked={isPromoter} onChange={handleChange} />
+          }
+          label=""
+        />
 
-      <FormControlLabel
-        control = {
-          <IOSSwitch sx={{ m: 1 }}
-            checked={checked}
-            onChange={handleChange}
-          />
-        }
-        label=""
-      />
-
-      {props.toMap ? (
-        <Link to="/map" className={styles.linkToEvents}>
-          Mapa
-        </Link>
-      ) : (
-        <Link to="/events" className={styles.linkToEvents}>
-          Eventos
-        </Link>
-      )}
-
+        {props.toMap ? (
+          <Link to="/map" className={styles.linkToEvents}>
+            Mapa
+          </Link>
+        ) : (
+          <Link to="/events" className={styles.linkToEvents}>
+            Eventos
+          </Link>
+        )}
       </div>
     </ThemeProvider>
   );

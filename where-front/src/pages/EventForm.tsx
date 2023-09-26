@@ -8,21 +8,32 @@ import clock_icon from '../assets/clock_icon.png';
 import person_icon from '../assets/person_icon.png';
 import PlusSymbol from '../assets/plusSymbol.png';
 import Map from '../components/Places';
+import { createEvent } from '../services/event';
+import { create } from '@mui/material/styles/createTransitions';
 
 function EventForm() {
   const [backgroundImage, setBackgroundImage] = useState('none');
+  const [formImage, setFormImage] = useState(null);
   const [eventTime, setEventTime] = useState('');
   const [eventDate, setEventDate] = useState('');
-  const [eventLocal, setEventLocal] = useState(null);
+
+  const [eventLocal, setEventLocal] = useState({
+    address: '',
+    lat: '',
+    lng: '',
+  });
+
   const [eventName, setEventName] = useState('');
 
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
     if (file) {
+      setFormImage(file);
       const imageUrl = URL.createObjectURL(file);
       setBackgroundImage(`url(${imageUrl})`);
     } else {
       setBackgroundImage('none');
+      setFormImage(null)
     }
   };
 
@@ -31,26 +42,52 @@ function EventForm() {
   };
 
   useEffect(() => {
-    if (eventLocal !== null) {
+    if (eventLocal.address !== '') {
       console.log('Dados do Local:', eventLocal);
     }
   }, [eventLocal]);
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append('nome', eventName);
+    formData.append('horario', eventTime);
+    formData.append('inicio', eventDate);
+    formData.append('latitude_fk', eventLocal.lat)
+    formData.append('longitude_fk', eventLocal.lng)
+    formData.append('endereco', eventLocal.address)
+    formData.append('foto', 'null')
+    formData.append('fim', 'null')
+    formData.append('codEvento_fk', 'null')
+    formData.append('estabelecimento', 'null')
+
+    if (formImage) {
+      formData.append('foto', formImage, 'backgroundImage.png');
+  
+      // Verifique se o Blob foi criado com sucesso
+      if (formImage.size > 0) {
+        console.log('Blob criado com sucesso');
+      } else {
+        console.log('Erro ao criar o Blob');
+      }
+    }
+
+    for (const pair of formData.entries()) {
+      console.log(pair[0] + ', ' + pair[1]);
+    }
+
     try {
-        const response = await login(emailValue, passwordValue);
-        if (response && response.isLogged) {
-            Cookies.set(response.cookieName, response.cookieInfo)
-            console.log(Cookies.get(response.cookieName));
-            
-            navigate('/map');
+      const response = await createEvent(formData);
+        if (response) {
+            console.log(response);
         }
     } catch (error) {
         console.error("Erro ao fazer login:", error);
     }
-  };
-
+  }
+    
   return (
     <>
       <Header toMap={false} />

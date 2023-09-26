@@ -26,9 +26,13 @@ function EventVision() {
     }
 
     const eventoCorrespondente = EventosMocados.find(evento => evento.id === Number(id));
+
     if (!eventoCorrespondente) {
         return <div>Evento não encontrado</div>;
     }
+
+    console.log(eventoCorrespondente);
+    
 
     return (
         <>

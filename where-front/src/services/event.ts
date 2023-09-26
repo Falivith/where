@@ -5,14 +5,17 @@ export const baseUrl = axios.create({
   baseURL: 'http://localhost:3000'
 });
 
-export async function createEvent(email: string, password: string) { // Tipando os parâmetros como string
-  const credentials = {
-    email,
-    password
-  };
-
+export async function createEvent(formdata: FormData) {
   try {
-    const response = await baseUrl.post('/login', credentials);
+
+    const token = Cookies.get('where-access-token');
+
+    const response = await baseUrl.post('/events', formdata, {
+      headers: {
+        'where-access-token': token,
+      },
+    });
+
     console.log("Resposta do servidor:", response);
     
     return response.data;
