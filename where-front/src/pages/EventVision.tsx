@@ -2,7 +2,6 @@ import Header from '../components/Header';
 import styles from './EventVision.module.css';
 import { Rating } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
-import opiniao from '../assets/opiniao.png';
 import pinpoint_icon from '../assets/pinpoint_icon.png';
 import calendar_icon from '../assets/calendar_icon.png';
 import clock_icon from '../assets/clock_icon.png';

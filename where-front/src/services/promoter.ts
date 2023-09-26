@@ -17,11 +17,11 @@ export async function turnOnPromoter() {
         },
     });
 
-    console.log("Resposta do servidor:", response);
+    console.log("Resposta (TurnOnPromoter):", response.data);
     
     return response.data.isPromoter;
   } catch (error) {
-    console.error("Erro ao se tornar promoter.", error);
+    console.error("Resposta (TurnOnPromoter):", error);
     throw error;
   }
 }
@@ -32,17 +32,17 @@ export async function turnOffPromoter() {
   
       const token = Cookies.get('where-access-token');
   
-      const response = await baseUrl.post('/user/downgrade', {
+      const response = await baseUrl.post('/user/downgrade', null, {
           headers: {
               'where-access-token': token,
           },
       });
   
-      console.log("Resposta do servidor:", response);
+      console.log("Resposta (TurnOffPromoter):", response.data);
       
       return response.data;
     } catch (error) {
-      console.error("Erro ao se tornar promoter.", error);
+      console.error("Resposta (TurnOffPromoter):", error);
       throw error;
     }
 }

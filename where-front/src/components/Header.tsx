@@ -5,7 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import styles from './Header.module.css';
-import { turnOnPromoter, promoterChecker } from '../services/promoter';
+import { turnOnPromoter, promoterChecker, turnOffPromoter } from '../services/promoter';
 
 const theme = createTheme({
   palette: {
@@ -85,10 +85,28 @@ function Header(props: HeaderProps) {
     checkPromoter();
   }, []);
 
+  useEffect(() => {
+    console.log(isPromoter);
+  }, [isPromoter]);
+
   const handleChange = async () => {
-    const response = await turnOnPromoter();
-    if (response) {
-      setIsPromoter(!isPromoter);
+
+    let response;
+
+    try {
+      if (isPromoter) {
+        response = await turnOffPromoter();
+        if (response) {
+          setIsPromoter(false);
+        }
+      } else {
+        response = await turnOnPromoter();
+        if (response) {
+          setIsPromoter(true);
+        }
+      }
+    } catch (error) {
+      console.error("Erro na solicitação HTTP:", error);
     }
   };
 
