@@ -68,7 +68,7 @@ router.get('/all', validateToken, async function(req,res,next) {
           //     fim : {
           //         [Op.gt] : moment().format("YYYY-MM-DD HH:mm:ss")
           //     }
-          }
+          //}
       });
       return res.status(200).json(listEventos);
    } catch(error){
