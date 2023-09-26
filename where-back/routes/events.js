@@ -160,12 +160,13 @@ router.get('/all', validateToken, async function (req, res, next) {
         // get all events from database
         const listEventos = await eventos.findAll({
             attributes: {exclude: ['email_fk']},
-            // where : {
-            //     fim : {
-            //         [Op.gt] : moment().format("YYYY-MM-DD HH:mm:ss")
-            //     }
-            //}
         });
+        listEventos.forEach(evento => {
+            const utf8EncodedBuffer = Buffer.from(evento.foto, 'utf-8');
+            const decodedString = utf8EncodedBuffer.toString('utf-8');
+            evento.foto = JSON.parse(decodedString)
+            evento.foto = utf8EncodedBuffer
+        })
         return res.status(200).json(listEventos);
     } catch (error) {
         req.responseJson.error = error;
