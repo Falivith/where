@@ -160,7 +160,7 @@ router.get('/all', validateToken, async function (req, res, next) {
         // get all events from database
         const listEventos = await eventos.findAll({
             attributes: {exclude:
-                    ['email_fk', 'foto']},
+                    ['email_fk']},
         });
         listEventos.forEach(evento => {
             if (evento.foto){
