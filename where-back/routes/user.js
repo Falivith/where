@@ -163,7 +163,7 @@ router.post('/upgrade', validateToken, async function(req,res,next){
 
     //Verify if user is already promoter
     const isPromoter = await promoters.findOne({where :{email_fk:req.username}})
-    if(isPromoter) return res.status(400).json("User already is promoter");
+    if(isPromoter) return res.status(400).json(req.responseJson);
     req.responseJson.isPromoter = true
 
     try {
