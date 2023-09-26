@@ -324,8 +324,8 @@ router.post('/', validateToken, upload.any(), async function (req, res, next) {
             fim: req.body.fim,
             email_fk: req.username,
             codEvento_fk: req.body.codEvento_fk,
-            latitude_fk: req.body.latitude_fk,
-            longitude_fk: req.body.longitude_fk,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
             horario: req.body.horario,
             estabelecimento: req.body.estabelecimento
         }).then(
