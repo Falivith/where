@@ -1,7 +1,8 @@
 /* eslint-disable */
 import { useState, useMemo } from 'react';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import { Libraries, useLoadScript } from '@react-google-maps/api';
 import styles from './Places.module.css';
+
 
 import usePlacesAutocomplete, {
   getGeocode,
@@ -17,39 +18,39 @@ import {
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
 
-export default function Places() {
+interface PlacesAutocompleteProps {
+  setSelected: (selected: any) => void;
+  selected: any;
+}
+
+const libraries: Libraries = ['places'];
+
+export default function Places(props: any) {
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries: ["places"],
+    libraries: libraries,
   });
 
   if (!isLoaded) return <div>Loading...</div>;
-  return <Map />
+  return <Map setSelect = {props.setSelect} />
 }
 
-function Map() {
+function Map(props: any) {
+  
   const center = useMemo(() => ({ lat: 43.45, lng: -80.49}), []);
-  const [selected, setSelected] = useState(null)
+  const [selected, setSelected] = useState<any>(null);
 
   return (
     <>
       <div className = { styles.placesContainer }>
-        <PlacesAutocomplete setSelected={setSelected}/>
+        <PlacesAutocomplete setSelected={props.setSelect} selected = {selected}/>
       </div>
-
-      {/*<GoogleMap
-        zoom = {10}
-        center = {center}
-        mapContainerClassName = "map-container"      
-      >
-
-      {selected && <Marker position = {selected} />}
-      </GoogleMap>*/}
     </>
   );
 }
 
-const PlacesAutocomplete = ({ setSelected }: any) => {
+const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({ setSelected, selected }) => {
   const{
     ready,
     value,
@@ -64,7 +65,7 @@ const PlacesAutocomplete = ({ setSelected }: any) => {
 
     const results = await getGeocode({ address });
     const {lat, lng} = await getLatLng(results[0]);
-    setSelected({ lat, lng });
+    setSelected({address, lat, lng});
   }
 
   return <Combobox onSelect={handleSelect}>

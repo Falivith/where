@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import styles from './EventForm.module.css';
 import pinpoint_icon from '../assets/pinpoint_icon.png';
@@ -7,16 +7,16 @@ import calendar_icon from '../assets/calendar_icon.png';
 import clock_icon from '../assets/clock_icon.png';
 import person_icon from '../assets/person_icon.png';
 import PlusSymbol from '../assets/plusSymbol.png';
-import PlacesAutocomplete from '../components/Places'
+import Map from '../components/Places';
 
 function EventForm() {
   const [backgroundImage, setBackgroundImage] = useState('none');
   const [eventTime, setEventTime] = useState('');
   const [eventDate, setEventDate] = useState('');
-  const [eventLocal, setEventLocal] = useState('');
+  const [eventLocal, setEventLocal] = useState(null);
   const [eventName, setEventName] = useState('');
 
-  const handleFileChange = (e: any) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
@@ -26,9 +26,15 @@ function EventForm() {
     }
   };
 
-  const handleEventLocalChange = (selectedLocation: any) => {
-    setEventLocal(selectedLocation);
+  const handleSelect = (data: any) => {
+    setEventLocal(data);
   };
+
+  useEffect(() => {
+    if (eventLocal !== null) {
+      console.log('Dados do Local:', eventLocal);
+    }
+  }, [eventLocal]);
 
   return (
     <>
@@ -74,16 +80,17 @@ function EventForm() {
                 />
               </div>
             </div>
-
             <div className={styles.inputContainer}>
-                <label className={styles.inputLabel} htmlFor="eventLocal">
-                    Local do Evento
-                </label>
-                <div className={styles.inputOuterStyle}>
-                    <img className={styles.inputIcon} src={pinpoint_icon} alt="Localização"/>
-                    <PlacesAutocomplete setSelected = {handleEventLocalChange} />
-                </div>
-                </div>
+              <label className={styles.inputLabel} htmlFor="eventLocal">
+                Local do Evento
+              </label>
+              <div className={styles.inputOuterStyle}>
+                <img className={styles.inputIcon} src={pinpoint_icon} alt="Localização" />
+                <Map
+                  setSelect={handleSelect}
+                />
+              </div>
+            </div>
           </div>
 
           <div className={styles.rightColumn}>

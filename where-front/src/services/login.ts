@@ -26,21 +26,13 @@ export async function testRoute() {
   try {
     const token = Cookies.get('where-access-token');
     
-    const response = await baseUrl.get('/user', token);
+    const response = await baseUrl.get('/user', {
+      headers: {
+        Authorization: `Bearer ${token}`, // Configura o token de acesso no cabeçalho
+      },
+    });
     
-    console.log(response.data);
-  } catch (error) {
-    console.error('Erro na requisição:', error);
-  }
-}
-
-export async function TESTEROTASAFONSO() {
-  try {
-    const token = Cookies.get('where-access-token');
-    
-    const response = await baseUrl.get('/user', token);
-    
-    console.log(response.data);
+    console.log(response.data); // Supondo que você deseja acessar os dados da resposta
   } catch (error) {
     console.error('Erro na requisição:', error);
   }

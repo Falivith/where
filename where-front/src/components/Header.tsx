@@ -80,7 +80,7 @@ function Header(props: HeaderProps) {
     setChecked(!checked);
   };
 
-  console.log(testRoute(), "alo");
+  //console.log(testRoute(), "alo");
 
   return (
     <ThemeProvider theme={theme}>
