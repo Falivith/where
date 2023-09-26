@@ -33,6 +33,29 @@ router.get('/teste', async function(req, res, next){
         .cookie("Cookie-Teste", "Cookie-Token",{maxAge: 9000000000, httpOnly: true, secure: true })
         .json("é isso")
 })
+
+// router.get('/name/:word', validateToken ,async function(req, res, next){
+//
+//     try{
+//         const listEventos = await eventos.findAll({
+//             attributes : {exclude: ['email_fk']},
+//             where : {
+//                 fim : {
+//                     [Op.gt] : moment().format("YYYY-MM-DD HH:mm:ss")
+//                 }
+//             }
+//         });
+//     } catch (error) {
+//         req.responseJson.error = error
+//         return res.status(400).json(req.responseJson)
+//     }
+// })
+
+
+
+
+
+
 // READ: Get all future and current events
 //
 // JSON INPUT - Not necessary
@@ -193,6 +216,7 @@ router.post('/', validateToken, async function(req,res,next){
          await eventos.create({
          descricao: req.body.descricao,
          nome: req.body.nome,
+             foto: req.body.foto,
          endereco: req.body.endereco,
          inicio: req.body.inicio,
          fim: req.body.fim,
