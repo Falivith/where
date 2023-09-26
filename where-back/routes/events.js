@@ -1,42 +1,86 @@
 const express = require('express');
 const router = express.Router();
-const { participam,eventos, promoters,avalia, usuarios} = require('../models');
+const {participam, eventos, promoters, avalia, usuarios} = require('../models');
 const {validateToken, createTokens} = require('../utils/JWT')
-const {eventUpdateValidation,eventValidation} = require('../utils/validation')
+const {eventUpdateValidation, eventValidation} = require('../utils/validation')
 const {Sequelize, Op} = require("sequelize");
 const {valid} = require("joi");
 const moment = require('moment');
-const multer  = require('multer');
+const multer = require('multer');
+const buffer = require("buffer");
 const upload = multer();
 
-router.get('/teste', async function(req, res, next){
+router.get('/teste/:id', async function (req, res, next) {
 
-    name = 'pessoa3@gmail.com'
-    try {
-        console.log("BBBBBBBBBBBBBBBBBB")
-        const user = await usuarios.findOne({
-            where: {email: name}
-        })
-        console.log("AAAAAAAAAAAAAAAAAAAAA")
-        console.log(user)
-        const accessToken = createTokens(user);
+    const foto = await eventos.findOne({
+        where: {codEvento: req.params.id}})
+    const utf8EncodedBuffer = Buffer.from(foto.foto, 'utf-8');
+    const decodedString = utf8EncodedBuffer.toString('utf-8');
+    foto.foto = JSON.parse(decodedString)
+    console.log("teste")
+    console.log(JSON.parse(decodedString))
+    res.status(200).json(foto)
+})
+router.post('/teste3', validateToken, upload.any(), async function (req, res, next) {
 
-        return res.status(200).cookie('where-access-token',
-            accessToken,
-            {maxAge: 60 * 60 * 24 * 1000})
-            .json({isLogged: true});
-    } catch(error) {
-        return res.status(400).json(error);
+    //Create flags
+    req.responseJson.isPromoter = false;
+    req.responseJson.isValidated = false;
+    req.responseJson.isCreated = false;
+    req.body = convertStringNullsToNull(req.body)
+    console.log(req.body.codEvento_fk)
+    console.log(req.files[0].buffer)
+
+
+    // const utf8EncodedBuffer = Buffer.from(buffer, 'utf-8');
+    // const decodedString = utf8EncodedBuffer.toString('utf-8');
+
+
+    //Verfiy if user is promoter
+    const isPromoter = await promoters.findOne({
+        where:
+            {email_fk: req.username}
+    });
+    if (!isPromoter) return res.status(400).json(req.responseJson);
+    req.responseJson.isPromoter = true;
+
+    //Verify input
+    const {error} = eventValidation(req.body);
+    if (error) {
+        req.responseJson.error = error.details[0].message;
+        return res.status(400).json(req.responseJson);
     }
+    req.responseJson.isValidated = true;
 
-
-
-    return res.status(200)
-        .cookie("Cookie-Teste", "Cookie-Token",{maxAge: 9000000000, httpOnly: true, secure: true })
-        .json("é isso")
+    try {
+        const jsonString = JSON.stringify(req.files);
+        const buffer = Buffer.from(jsonString, 'utf-8');
+        await eventos.create({
+            descricao: req.body.descricao,
+            nome: req.body.nome,
+            foto: buffer,
+            endereco: req.body.endereco,
+            inicio: req.body.inicio,
+            fim: req.body.fim,
+            email_fk: req.username,
+            codEvento_fk: req.body.codEvento_fk,
+            latitude_fk: req.body.latitude_fk,
+            longitude_fk: req.body.longitude_fk,
+            horario: req.body.horario,
+            estabelecimento: req.body.estabelecimento
+        }).then(
+            evento => {
+                return res.status(200).json({isCreated: true, id: evento.codEvento});
+            }
+        );
+    } catch (error) {
+        req.responseJson.error = error;
+        return res.status(400).json(req.responseJson);
+    }
 })
 
-router.post('/teste2', validateToken, upload.any(), async function(req,res,next){
+
+router.post('/teste2', validateToken, upload.any(), async function (req, res, next) {
 
     //Create flags
     req.responseJson.isPromoter = false;
@@ -46,9 +90,11 @@ router.post('/teste2', validateToken, upload.any(), async function(req,res,next)
     console.log(req.body)
 
     //Verfiy if user is promoter
-    const isPromoter = await promoters.findOne({where :
-            {email_fk: req.username} });
-    if(!isPromoter) return res.status(400).json(req.responseJson);
+    const isPromoter = await promoters.findOne({
+        where:
+            {email_fk: req.username}
+    });
+    if (!isPromoter) return res.status(400).json(req.responseJson);
     req.responseJson.isPromoter = true;
 
     //Verify input
@@ -75,24 +121,24 @@ router.post('/teste2', validateToken, upload.any(), async function(req,res,next)
             estabelecimento: req.body.estabelecimento
         }).then(
             evento => {
-                return res.status(200).json({isCreated:true, id:evento.codEvento});
+                return res.status(200).json({isCreated: true, id: evento.codEvento});
             }
         );
-    } catch (error){
+    } catch (error) {
         req.responseJson.error = error;
         return res.status(400).json(req.responseJson);
     }
 })
 
-router.get('/name/:substring', validateToken ,async function(req, res, next){
+router.get('/name/:substring', validateToken, async function (req, res, next) {
 
-    try{
+    try {
         const substring = req.params.substring
         const listEventos = await eventos.findAll({
-            attributes : {exclude: ['email_fk']},
-            where : {
-                nome : {
-                    [Op.substring] : req.params.substring
+            attributes: {exclude: ['email_fk']},
+            where: {
+                nome: {
+                    [Op.substring]: req.params.substring
                 }
             }
         });
@@ -107,22 +153,22 @@ router.get('/name/:substring', validateToken ,async function(req, res, next){
 // READ: Get all future and current events
 //
 // JSON INPUT - Not necessary
-router.get('/all', validateToken, async function(req,res,next) {
-   try {
-      // get all events from database
-      const listEventos = await eventos.findAll({
-          attributes : {exclude: ['email_fk']},
-          // where : {
-          //     fim : {
-          //         [Op.gt] : moment().format("YYYY-MM-DD HH:mm:ss")
-          //     }
-          //}
-      });
-      return res.status(200).json(listEventos);
-   } catch(error){
-       req.responseJson.error = error;
-      return res.status(400).json(req.responseJson);
-   }
+router.get('/all', validateToken, async function (req, res, next) {
+    try {
+        // get all events from database
+        const listEventos = await eventos.findAll({
+            attributes: {exclude: ['email_fk']},
+            // where : {
+            //     fim : {
+            //         [Op.gt] : moment().format("YYYY-MM-DD HH:mm:ss")
+            //     }
+            //}
+        });
+        return res.status(200).json(listEventos);
+    } catch (error) {
+        req.responseJson.error = error;
+        return res.status(400).json(req.responseJson);
+    }
 });
 
 // READ: Get subevents from x event
@@ -130,7 +176,7 @@ router.get('/all', validateToken, async function(req,res,next) {
 // JSON INPUT
 //
 // -
-router.get('/sub/:id', validateToken, async function(req, res, next) {
+router.get('/sub/:id', validateToken, async function (req, res, next) {
 
     //Create flag
     req.responseJson.isEvent = false;
@@ -139,16 +185,16 @@ router.get('/sub/:id', validateToken, async function(req, res, next) {
     const event = await eventos.findByPk(req.params.id);
 
     // Verify if event exists
-    if(!event) return res.status(400).json(req.responseJson);
+    if (!event) return res.status(400).json(req.responseJson);
     req.responseJson.isEvent = true;
 
     try {
         const listSubEvents = await eventos.findAll({
-            where : {codEvento_fk: req.params.id}
+            where: {codEvento_fk: req.params.id}
         });
         return res.status(200).json(listSubEvents);
 
-    } catch(error) {
+    } catch (error) {
         req.responseJson.message = "Database error";
         req.responseJson.error = error
         return res.status(400).json(req.responseJson);
@@ -160,31 +206,31 @@ router.get('/sub/:id', validateToken, async function(req, res, next) {
 // READ: Get events where logged user is the creator/owner
 //
 // JSON INPUT NOT NECESSARY
-router.get('/user/creator', validateToken, async function(req, res, next){
+router.get('/user/creator', validateToken, async function (req, res, next) {
 
-   // Create flag
-   req.responseJson.listEvents = null;
+    // Create flag
+    req.responseJson.listEvents = null;
 
-   try {
-      // Get all events of a LOGGED USER from database
-      const listEvents = await eventos.findAll({
-         where: {
-            email_fk: req.username
-         }
-      })
-       //Remove email from response
-      listEvents.forEach(event => event.email_fk = undefined);
-      return res.status(200).json({listEvents: listEvents});
-   } catch (error) {
-       req.responseJson.error = error
-      return res.status(400).json(req.responseJson);
-   }
+    try {
+        // Get all events of a LOGGED USER from database
+        const listEvents = await eventos.findAll({
+            where: {
+                email_fk: req.username
+            }
+        })
+        //Remove email from response
+        listEvents.forEach(event => event.email_fk = undefined);
+        return res.status(200).json({listEvents: listEvents});
+    } catch (error) {
+        req.responseJson.error = error
+        return res.status(400).json(req.responseJson);
+    }
 
 })
 
 
 // Get events where user is interested or confirmed
-router.get('/user/participating', validateToken, async function(req, res, next){
+router.get('/user/participating', validateToken, async function (req, res, next) {
 
     // Create flag
     req.responseJson.listEvents = null;
@@ -210,7 +256,7 @@ router.get('/user/participating', validateToken, async function(req, res, next){
         listId.forEach(entry => idArray.push(entry.dataValues.codEvento_fk))
 
         const listEvents = await eventos.findAll({
-            where : {
+            where: {
                 codEvento: idArray
             }
         })
@@ -239,7 +285,7 @@ router.get('/user/participating', validateToken, async function(req, res, next){
 //          "horario": "DATETIME YYYY-MM-DD HH:mm:ss",
 //          "estabelecimento": "STRING"
 //   }
-router.post('/', validateToken, upload.any(), async function(req,res,next){
+router.post('/', validateToken, upload.any(), async function (req, res, next) {
 
     //Create flags
     req.responseJson.isPromoter = false;
@@ -247,51 +293,56 @@ router.post('/', validateToken, upload.any(), async function(req,res,next){
     req.responseJson.isCreated = false;
     req.body = convertStringNullsToNull(req.body)
     console.log(req.body.codEvento_fk)
-    console.log(typeof(req.body.codEvento_fk))
-   //Verfiy if user is promoter
-   const isPromoter = await promoters.findOne({where :
-          {email_fk: req.username} });
-   if(!isPromoter) return res.status(400).json(req.responseJson);
-   req.responseJson.isPromoter = true;
+    console.log(req.files)
+    //Verfiy if user is promoter
+    const isPromoter = await promoters.findOne({
+        where:
+            {email_fk: req.username}
+    });
+    if (!isPromoter) return res.status(400).json(req.responseJson);
+    req.responseJson.isPromoter = true;
 
-   //Verify input
-   const {error} = eventValidation(req.body);
-   if (error) {
-       req.responseJson.error = error.details[0].message;
-       return res.status(400).json(req.responseJson);
-   }
-   req.responseJson.isValidated = true;
+    //Verify input
+    const {error} = eventValidation(req.body);
+    if (error) {
+        req.responseJson.error = error.details[0].message;
+        return res.status(400).json(req.responseJson);
+    }
+    req.responseJson.isValidated = true;
 
-   try {
-         await eventos.create({
-         descricao: req.body.descricao,
-         nome: req.body.nome,
-             foto: req.file,
-         endereco: req.body.endereco,
-         inicio: req.body.inicio,
-         fim: req.body.fim,
-         email_fk: req.username,
-         codEvento_fk: req.body.codEvento_fk,
-         latitude_fk: req.body.latitude_fk,
-         longitude_fk: req.body.longitude_fk,
-         horario: req.body.horario,
-         estabelecimento: req.body.estabelecimento
-      }).then(
-          evento => {
-              return res.status(200).json({isCreated:true, id:evento.codEvento});
-          }
-          );
-   } catch (error){
-      req.responseJson.error = error;
-      return res.status(400).json(req.responseJson);
-   }
+    try {
+        const jsonString = JSON.stringify(req.files[0]);
+        const buffer = Buffer.from(jsonString, 'utf-8');
+
+        await eventos.create({
+            descricao: req.body.descricao,
+            nome: req.body.nome,
+            foto: buffer,
+            endereco: req.body.endereco,
+            inicio: req.body.inicio,
+            fim: req.body.fim,
+            email_fk: req.username,
+            codEvento_fk: req.body.codEvento_fk,
+            latitude_fk: req.body.latitude_fk,
+            longitude_fk: req.body.longitude_fk,
+            horario: req.body.horario,
+            estabelecimento: req.body.estabelecimento
+        }).then(
+            evento => {
+                return res.status(200).json({isCreated: true, id: evento.codEvento});
+            }
+        );
+    } catch (error) {
+        req.responseJson.error = error;
+        return res.status(400).json(req.responseJson);
+    }
 })
 
 // READ: Get X event
 //
 //
 //
-router.get('/:id', validateToken, async  function(req, res, next) {
+router.get('/:id', validateToken, async function (req, res, next) {
     //Create flag
     req.responseJson.isEvent = false;
 
@@ -300,7 +351,7 @@ router.get('/:id', validateToken, async  function(req, res, next) {
 
 
     // Verify if event exists
-    if(!event) return res.status(400).json(req.responseJson);
+    if (!event) return res.status(400).json(req.responseJson);
     req.responseJson.isEvent = true;
 
     //Remove email value from response
@@ -323,7 +374,7 @@ router.get('/:id', validateToken, async  function(req, res, next) {
 //          "horario": "DATETIME YYYY-MM-DD HH:mm:ss",
 //          "estabelecimento": "STRING"
 //   }
-router.put('/:id', validateToken, async function(req, res, next) {
+router.put('/:id', validateToken, async function (req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
@@ -336,17 +387,19 @@ router.put('/:id', validateToken, async function(req, res, next) {
     const event = await eventos.findByPk(req.params.id);
 
     // Verify if event exists
-    if(!event) return res.status(400).json(req.responseJson);
+    if (!event) return res.status(400).json(req.responseJson);
     req.responseJson.isEvent = true;
 
     //Verify if user is event owner
-    if(event.email_fk != req.username) return res.status(400).json(req.responseJson);
+    if (event.email_fk != req.username) return res.status(400).json(req.responseJson);
     req.responseJson.isOwner = true;
 
     //Verify if user is a promoter
-    const isPromoter = await promoters.findOne({where :
-            {email_fk: req.username} });
-    if(!isPromoter) return res.status(400).json(req.responseJson);
+    const isPromoter = await promoters.findOne({
+        where:
+            {email_fk: req.username}
+    });
+    if (!isPromoter) return res.status(400).json(req.responseJson);
     req.responseJson.isPromoter = true;
 
 
@@ -375,7 +428,7 @@ router.put('/:id', validateToken, async function(req, res, next) {
         });
         return res.status(200).json({isUpdated: true});
 
-    } catch (error){
+    } catch (error) {
         req.responseJson.error = error
         return res.status(400).json(req.responseJson);
     }
@@ -387,7 +440,7 @@ router.put('/:id', validateToken, async function(req, res, next) {
 //
 // rota "/codEvento"
 
-router.delete('/:id', validateToken, async function(req, res,next) {
+router.delete('/:id', validateToken, async function (req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
@@ -398,21 +451,21 @@ router.delete('/:id', validateToken, async function(req, res,next) {
     const event = await eventos.findByPk(req.params.id);
 
     // Verify if event exists
-    if(!event) return res.status(400).json(req.responseJson);
+    if (!event) return res.status(400).json(req.responseJson);
     req.responseJson.isEvent = true;
 
     //Verify if user is owner
-    if(event.email_fk != req.username) return res.status(400).json(req.responseJson);
+    if (event.email_fk != req.username) return res.status(400).json(req.responseJson);
     req.responseJson.isOwner = true;
 
     try {
         //Try to delete event
         await eventos.destroy({
-            where: { codEvento: req.params.id}
+            where: {codEvento: req.params.id}
         });
         //Return success
-        return res.status(200).json({isDeleted:true});
-    } catch(error) {
+        return res.status(200).json({isDeleted: true});
+    } catch (error) {
         res.status(400).json(req.responseJson);
     }
 })
@@ -424,7 +477,7 @@ router.delete('/:id', validateToken, async function(req, res,next) {
 // {
 //      "codEvento": "ID DO EVENTO"
 // }
-router.get('/interested/:id', validateToken, async function(req, res, next) {
+router.get('/interested/:id', validateToken, async function (req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
@@ -433,16 +486,18 @@ router.get('/interested/:id', validateToken, async function(req, res, next) {
     const event = await eventos.findByPk(req.params.id);
 
     //Verify if event exists
-    if(!event) return res.status(400).json(req.params.id);
+    if (!event) return res.status(400).json(req.params.id);
     req.responseJson.isEvent = true;
 
     try {
-        const numberOfInterested = await participam.count({where: {
-            codEvento_fk: req.params.id,
-            confirmado: 0
-            }})
+        const numberOfInterested = await participam.count({
+            where: {
+                codEvento_fk: req.params.id,
+                confirmado: 0
+            }
+        })
         return res.status(200).json({numberOfInterested: numberOfInterested});
-    } catch(error) {
+    } catch (error) {
         req.responseJson.error = error;
         return res.status(400).json(req.responseJson);
     }
@@ -456,7 +511,7 @@ router.get('/interested/:id', validateToken, async function(req, res, next) {
 // {
 //      "codEvento": "ID DO EVENTO"
 // }
-router.get('/confirmed/:id', validateToken, async function(req, res, next) {
+router.get('/confirmed/:id', validateToken, async function (req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
@@ -465,16 +520,18 @@ router.get('/confirmed/:id', validateToken, async function(req, res, next) {
     const event = await eventos.findByPk(req.params.id);
 
     //Verify if event exists
-    if(!event) return res.status(400).json(req.params.id);
+    if (!event) return res.status(400).json(req.params.id);
     req.responseJson.isEvent = true;
 
     try {
-        const numberOfInterested = await participam.count({where: {
+        const numberOfInterested = await participam.count({
+            where: {
                 codEvento_fk: req.params.id,
                 confirmado: true
-            }})
+            }
+        })
         return res.status(200).json({numberOfInterested: numberOfInterested});
-    } catch(error) {
+    } catch (error) {
         req.responseJson.error = error;
         return res.status(400).json(req.responseJson);
     }
