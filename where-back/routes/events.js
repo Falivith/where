@@ -6,6 +6,8 @@ const {eventUpdateValidation,eventValidation} = require('../utils/validation')
 const {Sequelize, Op} = require("sequelize");
 const {valid} = require("joi");
 const moment = require('moment');
+const multer  = require('multer');
+const upload = multer();
 
 router.get('/teste', async function(req, res, next){
 
@@ -32,6 +34,54 @@ router.get('/teste', async function(req, res, next){
     return res.status(200)
         .cookie("Cookie-Teste", "Cookie-Token",{maxAge: 9000000000, httpOnly: true, secure: true })
         .json("é isso")
+})
+
+router.post('/teste2', validateToken, upload.none(), async function(req,res,next){
+
+    //Create flags
+    req.responseJson.isPromoter = false;
+    req.responseJson.isValidated = false;
+    req.responseJson.isCreated = false;
+
+    console.log(req.body)
+
+    //Verfiy if user is promoter
+    const isPromoter = await promoters.findOne({where :
+            {email_fk: req.username} });
+    if(!isPromoter) return res.status(400).json(req.responseJson);
+    req.responseJson.isPromoter = true;
+
+    //Verify input
+    const {error} = eventValidation(req.body);
+    if (error) {
+        req.responseJson.error = error.details[0].message;
+        return res.status(400).json(req.responseJson);
+    }
+    req.responseJson.isValidated = true;
+
+    try {
+        await eventos.create({
+            descricao: req.body.descricao,
+            nome: req.body.nome,
+            foto: req.body.foto,
+            endereco: req.body.endereco,
+            inicio: req.body.inicio,
+            fim: req.body.fim,
+            email_fk: req.username,
+            codEvento_fk: req.body.codEvento_fk,
+            latitude_fk: req.body.latitude_fk,
+            longitude_fk: req.body.longitude_fk,
+            horario: req.body.horario,
+            estabelecimento: req.body.estabelecimento
+        }).then(
+            evento => {
+                return res.status(200).json({isCreated:true, id:evento.codEvento});
+            }
+        );
+    } catch (error){
+        req.responseJson.error = error;
+        return res.status(400).json(req.responseJson);
+    }
 })
 
 router.get('/name/:substring', validateToken ,async function(req, res, next){
@@ -193,13 +243,15 @@ router.get('/user/participating', validateToken, async function(req, res, next){
 //          "horario": "DATETIME YYYY-MM-DD HH:mm:ss",
 //          "estabelecimento": "STRING"
 //   }
-router.post('/', validateToken, async function(req,res,next){
+router.post('/', validateToken, upload.none(), async function(req,res,next){
 
     //Create flags
     req.responseJson.isPromoter = false;
     req.responseJson.isValidated = false;
     req.responseJson.isCreated = false;
-
+    req.body = convertStringNullsToNull(req.body)
+    console.log(req.body.codEvento_fk)
+    console.log(typeof(req.body.codEvento_fk))
    //Verfiy if user is promoter
    const isPromoter = await promoters.findOne({where :
           {email_fk: req.username} });
@@ -432,6 +484,13 @@ router.get('/confirmed/:id', validateToken, async function(req, res, next) {
     }
 })
 
-
+function convertStringNullsToNull(obj) {
+    for (const key in obj) {
+        if (obj[key] === "null") {
+            obj[key] = null;
+        }
+    }
+    return obj;
+}
 
 module.exports = router;
