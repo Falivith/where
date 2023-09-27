@@ -62,7 +62,7 @@ router.post('/', validateToken, async function(req, res,next) {
         req.responseJson.participating = true;
         return res.status(400).json(req.responseJson);
     }
-    req.responseJson.participating = false;
+    req.responseJson.isParticipating = false;
 
     try {
         await participam.create({

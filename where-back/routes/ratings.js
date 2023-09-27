@@ -8,13 +8,13 @@ const {Sequelize} = require("sequelize");
 
 
 //Get list of ratings+comment+datime of a certain event
-router.get('/all', validateToken, async function(req, res, next) {
+router.get('/all/:id', validateToken, async function(req, res, next) {
 
     //Create flags
     req.responseJson.isEvent = false;
 
     // Verify if event exists
-    const event = eventos.findByPk(req.body.codEvento);
+    const event = eventos.findByPk(req.params.id);
     if(!event) return res.status(400).json(req.responseJson);
 
     // Validate entry
@@ -23,7 +23,7 @@ router.get('/all', validateToken, async function(req, res, next) {
     try {
         const ratingList = await avalia.findAll({
             attributes: ["comentario", "rating", "horario"],
-            where: {codEvento_fk: req.body.codEvento},
+            where: {codEvento_fk: req.params.id},
             order: [["horario", 'DESC']]
         })
 
