@@ -112,3 +112,20 @@ export async function verificarConfirmacao(id: number) {
     throw error;
   }
 }
+
+export async function numeroParticipantes(id: number) {
+  try {
+    const token = Cookies.get('where-access-token');
+
+    const response = await baseUrl.get(`events/${id}/participating`, {
+      headers: {
+        'where-access-token': token,
+      },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao verificar participantes", error);
+    throw error;
+  }
+}

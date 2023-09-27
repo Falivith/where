@@ -12,7 +12,7 @@ import people_icon from '../assets/people_icon.png';
 import EventosMocados from '../assets/EventosMocados';
 import { Link, useParams } from 'react-router-dom';
 import Modal from './Modal';
-import { getOneEvent, confirmarParticipacao, verificarConfirmacao } from '../services/event';
+import { getOneEvent, confirmarParticipacao, verificarConfirmacao, numeroParticipantes } from '../services/event';
 
 function horaParte(horario: any) {
     const partes = horario.split('T');
@@ -50,6 +50,17 @@ function EventVision() {
             console.error('Erro ao verificar a confirmação do usuário:', error);
         }
     };
+
+    const checkNumeroParticipantes = async () => {
+        try {
+            const confirmacao = await numeroParticipantes(id);
+            console.log("Retorno: ", confirmacao);
+            
+            setConfirmado(confirmacao.isParticipating);
+        } catch (error) {
+            console.error('Erro ao verificar a confirmação do usuário:', error);
+        }
+    };
     
     const alterarConfirmacao = async () => {
         try {
@@ -78,6 +89,7 @@ function EventVision() {
                 setUrl(url);
 
                 verificarConfirmacaoUsuario();
+                checkNumeroParticipantes();
     
                 setIsLoading(false);
             } catch (error) {
