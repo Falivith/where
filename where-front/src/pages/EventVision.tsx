@@ -59,7 +59,6 @@ function EventVision() {
     const verificarConfirmacaoUsuario = async () => {
         try {
             const confirmacao = await verificarConfirmacao(id);
-            console.log("Retorno: ", confirmacao);
             
             setConfirmado(confirmacao.isParticipating);
         } catch (error) {
@@ -70,7 +69,6 @@ function EventVision() {
     const checkNumeroParticipantes = async () => {
         try {
             const response = await numeroParticipantes(id);
-            console.log("Retorno: ", response);
             
             setParticipants(response.numberOfParticipating)
         } catch (error) {
@@ -82,9 +80,7 @@ function EventVision() {
         try {
             let novoStatus = !confirmado; // Inverta o estado de confirmação
             const response = await confirmarParticipacao(id, novoStatus);
-            
-            console.log(response);
-            
+
             setConfirmado(novoStatus); // Atualize o estado de confirmação com o novoStatus
         } catch (error) {
             console.error('Erro ao confirmar participação:', error);
@@ -95,7 +91,7 @@ function EventVision() {
         const fetchData = async () => {
             try {
                 const response = await getOneEvent(id);
-                console.log(response);
+
                 setEvent(response);
     
                 // Gere a URL somente quando a resposta estiver pronta
@@ -108,8 +104,6 @@ function EventVision() {
                 checkNumeroParticipantes();
                 const mediaResponse = await mediaRatings(id);
                 const commentsResponse = await ratingsAll(id);
-                
-                console.log(commentsResponse);
                 
                 setComments(commentsResponse);
                 

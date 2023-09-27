@@ -19,7 +19,6 @@ function Events() {
       try {
         const response = await getEvents();
         setEvents(response); // Define o estado com os eventos obtidos
-        console.log(response); // Imprime o resultado no console
       } catch (error) {
         console.error('Erro ao buscar eventos:', error);
       }
@@ -45,7 +44,6 @@ function Events() {
     ? filterEvents((event) => event.nome && event.isCreator)
     : events;
 
-  // Função para alternar entre mostrar todos e mostrar eventos com nomes começando com "B"
   const toggleShowEventsStartingWithB = () => {
     setShowEventsStartingWithB((prevState) => !prevState);
   };
@@ -66,43 +64,53 @@ function Events() {
     <>
       <Header toMap={true} />
 
-      <label className = {styles.label}>
-        Meus Eventos
-        <input
-          type="checkbox"
-          checked={showEventsStartingWithB}
-          onChange={toggleShowEventsStartingWithB}
-          className={styles.checkbox}
-        />
-      </label>
+      {isPromoter && (
+        <label className={styles.label}>
+          Meus Eventos
+          <input
+            type="checkbox"
+            checked={showEventsStartingWithB}
+            onChange={toggleShowEventsStartingWithB}
+            className={styles.checkbox}
+          />
+        </label>
+      )}
 
       <div className={styles.gridContainer}>
         <div className={styles.grid}>
 
-          {filteredEvents.map((event) => {
-            const uint8Array = new Uint8Array(event.foto.buffer.data);
-            const blob = new Blob([uint8Array], { type: 'application/octet-stream' });
-            const url = URL.createObjectURL(blob);
+            {filteredEvents.map((event) => {
+              const uint8Array = new Uint8Array(event.foto.buffer.data);
+              const blob = new Blob([uint8Array], { type: 'application/octet-stream' });
+              const url = URL.createObjectURL(blob);
 
-            console.log(event);
-            
-            if (event.isCreator) {
+              if (event.isCreator) {
+                return (
+                  <Link key={event.codEvento} to={`/evento/${event.codEvento}`} className={styles.gridItem}>
+                    {event.foto && event.foto.buffer && <img src={url} alt={`Evento ${event.codEvento}`} />}
+                    <span className={styles.eventTitle}>{event.nome}</span>
+
+                    <button
+                      className={styles.editButton}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navigate(`/editEvento/${event.codEvento}`);
+                      }}
+                    >
+                      <img src={gear} />
+                    </button>
+                  </Link>
+                );
+              }
+
               return (
                 <Link key={event.codEvento} to={`/evento/${event.codEvento}`} className={styles.gridItem}>
                   {event.foto && event.foto.buffer && <img src={url} alt={`Evento ${event.codEvento}`} />}
-                  <span className={ styles.eventTitle }>{event.nome}</span>
-                  <button  className = {styles.editButton }><img src={gear} onClick={() => navigate('/editEvento')}></img></button>
+                  <span className={styles.eventTitle}>{event.nome}</span>
                 </Link>
               );
-            }
-
-            return (
-              <Link key={event.codEvento} to={`/evento/${event.codEvento}`} className={styles.gridItem}>
-                {event.foto && event.foto.buffer && <img src={url} alt={`Evento ${event.codEvento}`} />}
-                <span className={ styles.eventTitle }>{event.nome}</span>
-              </Link>
-            );
-          })}
+            })}
 
           {renderAddEventLink()}
         </div>

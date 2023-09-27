@@ -9,6 +9,7 @@ import Events from './pages/Events.tsx';
 import EventVision from './pages/EventVision.tsx';
 import EventForm from './pages/EventForm.tsx';
 import ClassifyEvent from './pages/ClassifyEvent.tsx';
+import EditEvent from './pages/EditEvent.tsx';
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/editevento/:index",
+    element: <EditEvent/>
   }
 ]);
 
