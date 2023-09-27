@@ -205,3 +205,21 @@ export async function eventFilter1(id: number) {
   }
 }
 
+export async function deleteEvent(id: number) {
+  try {
+    const token = Cookies.get('where-access-token');
+
+    const response = await baseUrl.delete(`events/${id}/`, {
+      headers: {
+        'where-access-token': token,
+      },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao consultar avaliações", error);
+    throw error;
+  }
+}
+
+

@@ -9,14 +9,13 @@ import clock_icon from '../assets/clock_icon.png';
 import person_icon from '../assets/person_icon.png';
 import PlusSymbol from '../assets/plusSymbol.png';
 import Map from '../components/Places';
-import { createEvent } from '../services/event';
+import { createEvent, getOneEvent, deleteEvent } from '../services/event';
+import { useParams } from 'react-router-dom';
 
 function EditEvent() {
-  const [backgroundImage, setBackgroundImage] = useState('none');
-  const [formImage, setFormImage] = useState('');
-  const [eventTime, setEventTime] = useState('');
-  const [eventDate, setEventDate] = useState('');
 
+  const params = useParams();
+  const id = params.index;
   const navigate = useNavigate();
 
   const [eventLocal, setEventLocal] = useState({
@@ -24,6 +23,31 @@ function EditEvent() {
     lat: '',
     lng: '',
   });
+  const [backgroundImage, setBackgroundImage] = useState('none');
+  const [formImage, setFormImage] = useState('');
+  const [eventTime, setEventTime] = useState('');
+  const [eventDate, setEventDate] = useState('');
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await getOneEvent(id);
+        console.log(response);
+  
+        setEventTime(response.horario);
+        setEventDate(response.inicio);
+        setEventLocal({
+          address: response.endereco,
+          lat: parseFloat(response.latitude),
+          lng: parseFloat(response.longitude),
+        });
+      } catch (error) {
+        console.error('Erro ao buscar dados do evento:', error);
+      }
+    }
+  
+    fetchData();
+  }, [id]);
 
   const [eventName, setEventName] = useState('');
 
@@ -49,9 +73,22 @@ function EditEvent() {
     }
   }, [eventLocal]);
 
-  useEffect(() => {
+  /*useEffect(() => {
       console.log('Dados do Tempo', eventTime, typeof(eventTime));
-  }, [eventTime]);
+  }, [eventTime]);*/
+
+  const handleDelete = async (event: any) => {
+    event.preventDefault();
+    try {
+      const response = await deleteEvent(id);
+        if (response) {
+            console.log(response);
+            navigate('/events');
+        }
+    } catch (error) {
+        console.error("Erro ao deletar evento: ", error);
+    }
+  }
 
 
   const handleSubmit = async (event: any) => {
@@ -91,14 +128,6 @@ function EditEvent() {
         console.error("Erro ao criar evento: ", error);
     }
   }
-
-  useEffect(() => {
-    // Preencha automaticamente os campos aqui
-    setEventName('Nome do Evento Preenchido');
-    setEventDate('2023-09-30'); // Defina a data desejada
-    setEventTime('15:30'); // Defina o horário desejado
-    // ... outros campos ...
-  }, []);
     
   return (
     <>
@@ -152,6 +181,7 @@ function EditEvent() {
                 <img className={styles.inputIcon} src={pinpoint_icon} alt="Localização" />
                 <Map
                   setSelect={handleSelect}
+                  value = { eventLocal.address }
                 />
               </div>
             </div>
@@ -190,8 +220,10 @@ function EditEvent() {
             </div>
           </div>
         </div>
-
-        <button type="submit" onClick = {handleSubmit} className={styles.submitButton}>Adicionar Evento</button>
+        <div className = {styles.buttonContainer}>
+          <button type="submit" onClick = {handleSubmit} className={styles.submitButton}>Adicionar Evento</button>
+          <button type="submit" onClick = {handleDelete} className={styles.deleteButton}>Excluir Evento</button>
+        </div>
       </div>
     </>
   );

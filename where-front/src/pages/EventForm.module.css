@@ -20,7 +20,7 @@
     border: none;
     width: 70%;
     border-radius: 20px;
-    height: 40px;
+    height: 50px;
     cursor: pointer;
     transition: .2s;
 }
@@ -148,4 +148,30 @@
 
 .rightColumn{
     margin-right: 8%;
+}
+
+.deleteButton{
+    margin-top: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    background-color: #ff001e;
+    color: white;
+    border: none;
+    width: 70%;
+    border-radius: 20px;
+    height: 50px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.deleteButton:hover{
+    background-color: #9e0316;
+    transition: .2s;
+}
+
+.buttonContainer{
+    display: flex;
+    width: 55%;
+    gap: 50px;
 }
