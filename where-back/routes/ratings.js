@@ -193,17 +193,17 @@ router.get('/average/:id', validateToken, async function(req,res,next) {
     req.responseJson.isEvent = false;
 
     // Verify if event exists
-    const event = await eventos.findByPk(req.req.params.id);
+    const event = await eventos.findByPk(req.params.id);
     if(!event) return res.status(400).json(req.responseJson);
 
     try {
         const numberOfRatings = await avalia.count({
-            where: {codEvento_fk: req.body.codEvento_fk}
+            where: {codEvento_fk: req.params.id}
         })
         console.log(numberOfRatings);
         if(numberOfRatings > 0) {
             const average = await avalia.findOne({
-                where: {codEvento_fk: req.req.params.id},
+                where: {codEvento_fk: req.params.id},
                 attributes: [Sequelize.fn("AVG", Sequelize.col("rating"))],
                 raw:true
             })
