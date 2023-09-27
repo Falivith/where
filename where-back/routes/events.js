@@ -158,11 +158,16 @@ router.get('/name/:substring', validateToken, async function (req, res, next) {
 router.get('/all', validateToken, async function (req, res, next) {
     try {
         // get all events from database
-        const listEventos = await eventos.findAll({
-            attributes: {exclude:
+        const listEventos = await eventos.findAll(
+            {
+            attributes: {
+                exclude:
                     ['email_fk']},
-        });
+        }
+        );
         listEventos.forEach(evento => {
+
+
             if (evento.foto){
                 const utf8EncodedBuffer = Buffer.from(evento.foto, 'utf-8');
                 const decodedString = utf8EncodedBuffer.toString('utf-8');

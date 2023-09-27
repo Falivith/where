@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment');
-const { avalia,eventos} = require('../models');
+const { avalia,eventos, usuarios} = require('../models');
 const {validateToken} = require('../utils/JWT')
 const {avaliaValidation} = require('../utils/validation')
 const {Sequelize} = require("sequelize");
@@ -22,14 +22,27 @@ router.get('/all/:id', validateToken, async function(req, res, next) {
     // Get all ratings
     try {
         const ratingList = await avalia.findAll({
-            attributes: ["comentario", "rating", "horario"],
+            attributes: ["email_fk","comentario", "rating", "horario"],
             where: {codEvento_fk: req.params.id},
             order: [["horario", 'DESC']]
         })
+        console.log("A")
+        const newArr = ratingList.map(async rating => {
+            
+            const user = await usuarios.findOne({
+                attributes: ["nome"],
+                where : {email: rating.email_fk}});
+            console.log(user.nome)
+            rating.email_fk = user.nome
+            console.log(rating.email_fk)
+        })
 
-        return res.status(200).json(ratingList);
+        await Promise.all(newArr)
+
+
+        return res.status(200).json(newArr);
     } catch(error){
-        return res.status(400).json({error:'Database Error'})
+        return res.status(400).json({error})
     }
 })
 
