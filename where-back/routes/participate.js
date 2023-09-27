@@ -43,7 +43,6 @@ router.post('/', validateToken, async function(req, res,next) {
 
     // Create flags
     req.responseJson.isEvent = false;
-    req.responseJson.participating = null;
 
 
     // Verify if event exists
