@@ -1,5 +1,6 @@
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import icon from '../assets/map_pin.png';
+import icon from '../assets/map_pin2.png';
+import { useEffect, useState } from 'react';
 
 const MapComponent = () => {
   const containerStyle = {
@@ -10,9 +11,11 @@ const MapComponent = () => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   const initialCenter = {
-    lat: -31.7649,
+    lat: -31.7649 ,
     lng: -52.3376
   };
+
+  //const initialCenter = new google.maps.LatLng(-31.7649, -52.3376);
 
   const initialZoom = 15;
 
@@ -29,17 +32,40 @@ const MapComponent = () => {
     clickableIcons: false,
   };
 
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [markersVisible, setMarkersVisible] = useState(false);
+
   const handleMarkerClick = (location: any) => {
     // Faça algo quando um marcador for clicado, por exemplo, exibir informações
     alert(`Você clicou em: ${location.name}`);
   };
 
+  useEffect(() => {
+    // Verificar se o mapa foi carregado
+    if (map) {
+      // Agora que o mapa está carregado, podemos exibir os marcadores
+      setMarkersVisible(true);
+    }
+  }, [map]);
+
   return (
     <LoadScript googleMapsApiKey={apiKey}>
-      <GoogleMap mapContainerStyle={containerStyle} center={initialCenter} zoom={initialZoom} options={mapOptions}>
-      <Marker position={initialCenter} title="Marcador Inicial" />
-        {data.map((location, index) => (
-          <Marker key={index} position={{ lat: location.lat, lng: location.lng }} title={location.name} onClick={() => handleMarkerClick(location)} /*icon={{ url: icon, scaledSize: new window.google.maps.Size(30,30) }}*/ />
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={initialCenter}
+        zoom={initialZoom}
+        options={mapOptions}
+        onLoad={(map) => setMap(map)}
+      >
+      <Marker position={initialCenter} title="Marcador Inicial"/>
+        {markersVisible && data.map((location, index) => (
+          <Marker
+            key={index}
+            position={{ lat: location.lat, lng: location.lng }}
+            title={location.name}
+            onClick={() => handleMarkerClick(location)}
+            /*icon={{ url: icon, scaledSize: new window.google.maps.Size(30,45) }}*/
+          />
         ))}
       </GoogleMap>
     </LoadScript>
