@@ -427,8 +427,8 @@ router.put('/:id', validateToken, upload.any(), async function (req, res, next) 
             endereco: req.body.endereco,
             inicio: req.body.inicio,
             fim: req.body.fim,
-            latitude_fk: req.body.latitude_fk,
-            longitude_fk: req.body.longitude_fk,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
             horario: req.body.horario,
             estabelecimento: req.body.estabelecimento
         }, {
