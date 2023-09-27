@@ -188,3 +188,20 @@ export async function ratingsAll(id: number) {
   }
 }
 
+export async function eventFilter1(id: number) {
+  try {
+    const token = Cookies.get('where-access-token');
+
+    const response = await baseUrl.get(`ratings/all/${id}/`, {
+      headers: {
+        'where-access-token': token,
+      },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao consultar avaliações", error);
+    throw error;
+  }
+}
+

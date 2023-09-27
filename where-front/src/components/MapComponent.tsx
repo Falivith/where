@@ -1,7 +1,11 @@
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import icon from '../assets/map_pin.png';
+import { useNavigate } from 'react-router-dom';
 
 const MapComponent = () => {
+
+  const navigate = useNavigate();
+  
   const containerStyle = {
     width: '1200px',
     height: '500px'
@@ -37,7 +41,6 @@ const MapComponent = () => {
   return (
     <LoadScript googleMapsApiKey={apiKey}>
       <GoogleMap mapContainerStyle={containerStyle} center={initialCenter} zoom={initialZoom} options={mapOptions}>
-      <Marker position={initialCenter} title="Marcador Inicial" />
         {data.map((location, index) => (
           <Marker key={index} position={{ lat: location.lat, lng: location.lng }} title={location.name} onClick={() => handleMarkerClick(location)} /*icon={{ url: icon, scaledSize: new window.google.maps.Size(30,30) }}*/ />
         ))}
