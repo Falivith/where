@@ -22,23 +22,23 @@ router.get('/all/:id', validateToken, async function(req, res, next) {
     // Get all ratings
     try {
         const ratingList = await avalia.findAll({
-            attributes: ["email_fk","comentario", "rating", "horario"],
+            attributes: ["comentario", "rating", "horario"],
             where: {codEvento_fk: req.params.id},
             order: [["horario", 'DESC']]
         })
-        console.log("A")
-        const newArr = ratingList.map(async rating => {
-            console.log(rating)
-            const user = await usuarios.findOne({
-                //attributes: ["nome"],
-                where : {email: rating.email_fk}});
-            console.log(user.senha)
-            return {nome: user.nome, comentario: rating.comentario, rating: rating.rating, horario: rating.horario}
-        })
+        // console.log("A")
+        // const newArr = ratingList.map(async rating => {
+        //     console.log(rating)
+        //     const user = await usuarios.findOne({
+        //         //attributes: ["nome"],
+        //         where : {email: rating.email_fk}});
+        //     console.log(user.senha)
+        //     return {nome: user.nome, comentario: rating.comentario, rating: rating.rating, horario: rating.horario}
+        // })
+        //
+        // await Promise.all(newArr)
 
-        await Promise.all(newArr)
-
-        return res.status(200).json(newArr);
+        return res.status(200).json(ratingList);
     } catch(error){
         return res.status(400).json({error})
     }
