@@ -156,7 +156,7 @@ router.get('/:id', validateToken, async function(req,res,next) {
         })
 
         if(participa) {
-            return res.status(200).json({isParticipating: true, confirmed: participa.confirmed})
+            return res.status(200).json({isParticipating: true, confirmed: participa.confirmado})
         } else {
             return res.status(200).json({isParticipating: false})
         }
