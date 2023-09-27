@@ -128,7 +128,7 @@ router.put('/', validateToken, async function(req, res, next) {
 // {
 //      "codEvento_fk": "id do evento",
 //  }
-router.get('/', validateToken, async function(req, res, next) {
+router.get('/:id', validateToken, async function(req, res, next) {
 
     try {
         const rating = await avalia.findOne({
@@ -139,7 +139,7 @@ router.get('/', validateToken, async function(req, res, next) {
             ],
             where:
                 {
-                    codEvento_fk: req.body.codEvento_fk,
+                    codEvento_fk: req.req.params.id,
                     email_fk: req.username
                 }
         })
@@ -148,7 +148,8 @@ router.get('/', validateToken, async function(req, res, next) {
 
         return res.status(200).json({hasRating:true, rating:rating});
     } catch(error){
-        return res.status(400).json({error:error});
+        req.responseJson.error = error
+        return res.status(400).json(req.response.json);
     }
 })
 
@@ -217,6 +218,7 @@ router.get('/average/:id', validateToken, async function(req,res,next) {
         return res.status(400).json({error:error});
     }
 })
+
 
 
 module.exports = router;
