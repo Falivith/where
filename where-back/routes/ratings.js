@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment');
-const { avalia,eventos} = require('../models');
+const { avalia,eventos, usuarios} = require('../models');
 const {validateToken} = require('../utils/JWT')
 const {avaliaValidation} = require('../utils/validation')
 const {Sequelize} = require("sequelize");
@@ -26,10 +26,21 @@ router.get('/all/:id', validateToken, async function(req, res, next) {
             where: {codEvento_fk: req.params.id},
             order: [["horario", 'DESC']]
         })
+        // console.log("A")
+        // const newArr = ratingList.map(async rating => {
+        //     console.log(rating)
+        //     const user = await usuarios.findOne({
+        //         //attributes: ["nome"],
+        //         where : {email: rating.email_fk}});
+        //     console.log(user.senha)
+        //     return {nome: user.nome, comentario: rating.comentario, rating: rating.rating, horario: rating.horario}
+        // })
+        //
+        // await Promise.all(newArr)
 
         return res.status(200).json(ratingList);
     } catch(error){
-        return res.status(400).json({error:'Database Error'})
+        return res.status(400).json({error})
     }
 })
 

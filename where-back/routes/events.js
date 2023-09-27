@@ -158,17 +158,23 @@ router.get('/name/:substring', validateToken, async function (req, res, next) {
 router.get('/all', validateToken, async function (req, res, next) {
     try {
         // get all events from database
-        const listEventos = await eventos.findAll({
-            attributes: {exclude:
-                    ['email_fk']},
-        });
+        const listEventos = await eventos.findAll(
+        //     {
+        //     attributes: {
+        //         exclude:
+        //             ['email_fk']},
+        // }
+        );
         listEventos.forEach(evento => {
+            evento.dataValues.isCreator = evento.email_fk == req.username
+            evento.email_fk = undefined
             if (evento.foto){
                 const utf8EncodedBuffer = Buffer.from(evento.foto, 'utf-8');
                 const decodedString = utf8EncodedBuffer.toString('utf-8');
                 evento.foto = JSON.parse(decodedString)
             }
         })
+        console.log(listEventos)
         return res.status(200).json(listEventos);
     } catch (error) {
         req.responseJson.error = error;

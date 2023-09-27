@@ -9,15 +9,29 @@ import pinpoint_icon from '../assets/pinpoint_icon.png';
 import calendar_icon from '../assets/calendar_icon.png';
 import clock_icon from '../assets/clock_icon.png';
 import people_icon from '../assets/people_icon.png';
-import EventosMocados from '../assets/EventosMocados';
 import { Link, useParams } from 'react-router-dom';
 import Modal from './Modal';
-import { getOneEvent, confirmarParticipacao, verificarConfirmacao, numeroParticipantes, mediaRatings } from '../services/event';
+import { getOneEvent, confirmarParticipacao, verificarConfirmacao, numeroParticipantes, mediaRatings, ratingsAll } from '../services/event';
 
 function horaParte(horario: any) {
-    const partes = horario.split('T');
-    const final = partes[1].split('.000Z');
-    return final[0];
+    if (horario && typeof horario === 'string') {
+        const partes = horario.split('T');
+        if (partes.length > 1) {
+            const final = partes[1].split('.000Z');
+            return final[0];
+        }
+    }
+    return ''; // Ou outra ação adequada caso horario não seja uma string válida
+}
+
+function data(horario: any) {
+    if (horario && typeof horario === 'string') {
+        const partes = horario.split('T');
+        if (partes.length > 0) {
+            return partes[0];
+        }
+    }
+    return ''; // Ou outra ação adequada caso horario não seja uma string válida
 }
 
 function EventVision() {
@@ -29,6 +43,7 @@ function EventVision() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento
     const [participants, setParticipants] = useState(0);
+    const [comments, setComments] = useState([]);
 
     const openModal = () => {
       setIsModalOpen(true);
@@ -44,7 +59,6 @@ function EventVision() {
     const verificarConfirmacaoUsuario = async () => {
         try {
             const confirmacao = await verificarConfirmacao(id);
-            console.log("Retorno: ", confirmacao);
             
             setConfirmado(confirmacao.isParticipating);
         } catch (error) {
@@ -55,7 +69,6 @@ function EventVision() {
     const checkNumeroParticipantes = async () => {
         try {
             const response = await numeroParticipantes(id);
-            console.log("Retorno: ", response);
             
             setParticipants(response.numberOfParticipating)
         } catch (error) {
@@ -67,9 +80,7 @@ function EventVision() {
         try {
             let novoStatus = !confirmado; // Inverta o estado de confirmação
             const response = await confirmarParticipacao(id, novoStatus);
-            
-            console.log(response);
-            
+
             setConfirmado(novoStatus); // Atualize o estado de confirmação com o novoStatus
         } catch (error) {
             console.error('Erro ao confirmar participação:', error);
@@ -80,7 +91,7 @@ function EventVision() {
         const fetchData = async () => {
             try {
                 const response = await getOneEvent(id);
-                console.log(response);
+
                 setEvent(response);
     
                 // Gere a URL somente quando a resposta estiver pronta
@@ -91,9 +102,12 @@ function EventVision() {
 
                 verificarConfirmacaoUsuario();
                 checkNumeroParticipantes();
-                const ximbas = mediaRatings();
-                console.log(ximbas);
+                const mediaResponse = await mediaRatings(id);
+                const commentsResponse = await ratingsAll(id);
                 
+                setComments(commentsResponse);
+                
+                setUserRating(mediaResponse.average)
     
                 setIsLoading(false);
             } catch (error) {
@@ -134,6 +148,7 @@ function EventVision() {
                             value={userRating} // Use o estado userRating para exibir a avaliação do usuário
                             precision={0.1}
                             size="large"
+                            readOnly={true}
                             onChange={(event, newValue) => handleRatingChange(newValue)} // Atualize a avaliação do usuário quando ela mudar
                             icon={<StarIcon style={{ color: '#2ECA45', fontSize: '4rem' }} />}
                             emptyIcon={<StarIcon style={{ color: 'grey', fontSize: '4rem' }} />}
@@ -165,6 +180,23 @@ function EventVision() {
                         <span className={styles.microInfo}> <img src={people_icon} /> {participants} </span>
                     </div>
                 </div>
+            </div>
+
+            <div className={styles.commentSection}>
+                {comments.length === 0 ? (
+                    <p>Seja o primeiro a comentar!</p>
+                ) : (
+                    comments.map((comment, index) => (
+                        <div key={index} className={styles.comment}>
+                            <p>{comment.comentario}</p>
+                            <div>
+                                <p>Rating: {comment.rating}</p>
+                                <p>Horário: {horaParte(comment.horario)}</p>
+                                <p>Data: {data(comment.horario)}</p>                            
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         </>
     );

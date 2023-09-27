@@ -3,6 +3,9 @@ import icon from '../assets/map_pin2.png';
 import { useEffect, useState } from 'react';
 
 const MapComponent = () => {
+
+  const navigate = useNavigate();
+  
   const containerStyle = {
     width: '1200px',
     height: '500px'

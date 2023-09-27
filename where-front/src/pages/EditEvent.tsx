@@ -91,6 +91,14 @@ function EditEvent() {
         console.error("Erro ao criar evento: ", error);
     }
   }
+
+  useEffect(() => {
+    // Preencha automaticamente os campos aqui
+    setEventName('Nome do Evento Preenchido');
+    setEventDate('2023-09-30'); // Defina a data desejada
+    setEventTime('15:30'); // Defina o horário desejado
+    // ... outros campos ...
+  }, []);
     
   return (
     <>
