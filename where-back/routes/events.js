@@ -550,6 +550,32 @@ router.get('/confirmed/:id', validateToken, async function (req, res, next) {
     }
 })
 
+
+router.get('/:id/participating', validateToken, async function (req, res, next) {
+
+    //Create flags
+    req.responseJson.isEvent = false;
+
+    //Get event
+    const event = await eventos.findByPk(req.params.id);
+
+    //Verify if event exists
+    if (!event) return res.status(400).json(req.responseJson);
+    req.responseJson.isEvent = true;
+
+    try {
+        const numberOfParticipating = await participam.count({
+            where: {
+                codEvento_fk: req.params.id,
+            }
+        })
+        return res.status(200).json({numberOfParticipating: numberOfParticipating});
+    } catch (error) {
+        req.responseJson.error = error;
+        return res.status(400).json(req.responseJson);
+    }
+})
+
 function convertStringNullsToNull(obj) {
     for (const key in obj) {
         if (obj[key] === "null") {
