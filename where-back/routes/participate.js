@@ -145,6 +145,7 @@ router.put('/', validateToken, async function(req,res,next) {
     }
 })
 
+// IsParticipating
 router.get('/:id', validateToken, async function(req,res,next) {
     try {
         const participa = await participam.findOne({
