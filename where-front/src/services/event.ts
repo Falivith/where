@@ -157,13 +157,7 @@ export async function mediaRatings(id: number) {
   try {
     const token = Cookies.get('where-access-token');
 
-    const req = {
-      codEvento_fk: id,
-      comentario: comentario,
-      rating: userRating
-    }
-
-    const response = await baseUrl.get(`ratings/average`, req, {
+    const response = await baseUrl.get(`ratings/average/${id}/`, {
       headers: {
         'where-access-token': token,
       },
@@ -171,7 +165,7 @@ export async function mediaRatings(id: number) {
     
     return response.data;
   } catch (error) {
-    console.error("Erro ao verificar participantes", error);
+    console.error("Erro ao consultar média", error);
     throw error;
   }
 }

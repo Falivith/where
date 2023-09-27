@@ -12,7 +12,7 @@ import people_icon from '../assets/people_icon.png';
 import EventosMocados from '../assets/EventosMocados';
 import { Link, useParams } from 'react-router-dom';
 import Modal from './Modal';
-import { getOneEvent, confirmarParticipacao, verificarConfirmacao, numeroParticipantes } from '../services/event';
+import { getOneEvent, confirmarParticipacao, verificarConfirmacao, numeroParticipantes, mediaRatings } from '../services/event';
 
 function horaParte(horario: any) {
     const partes = horario.split('T');
@@ -91,6 +91,9 @@ function EventVision() {
 
                 verificarConfirmacaoUsuario();
                 checkNumeroParticipantes();
+                const ximbas = mediaRatings();
+                console.log(ximbas);
+                
     
                 setIsLoading(false);
             } catch (error) {
@@ -107,18 +110,6 @@ function EventVision() {
         setUserRating(newValue);
     };
 
-    const handleFormSubmit = (e: any) => {
-        e.preventDefault();
-        // Aqui você pode criar um objeto com todos os dados relevantes, incluindo a avaliação do usuário
-        const dataToSend = {
-            rating: userRating,
-            // Adicione outros campos do formulário, se houver
-        };
-        // Agora você pode enviar 'dataToSend' para o servidor ou realizar outra ação necessária
-        setFormData(dataToSend); // Isso é opcional, apenas para visualização
-    };
-
-    // Renderiza uma mensagem de carregamento enquanto isLoading for true
     if (isLoading) {
         return <div>Carregando...</div>;
     }
