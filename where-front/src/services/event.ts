@@ -129,3 +129,49 @@ export async function numeroParticipantes(id: number) {
     throw error;
   }
 }
+
+export async function postAvaliacao(id: number, comentario: string, userRating: number) {
+  try {
+    const token = Cookies.get('where-access-token');
+
+    const req = {
+      codEvento_fk: id,
+      comentario: comentario,
+      rating: userRating
+    }
+
+    const response = await baseUrl.post(`ratings`, req, {
+      headers: {
+        'where-access-token': token,
+      },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao verificar participantes", error);
+    throw error;
+  }
+}
+
+export async function mediaRatings(id: number) {
+  try {
+    const token = Cookies.get('where-access-token');
+
+    const req = {
+      codEvento_fk: id,
+      comentario: comentario,
+      rating: userRating
+    }
+
+    const response = await baseUrl.get(`ratings/average`, req, {
+      headers: {
+        'where-access-token': token,
+      },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao verificar participantes", error);
+    throw error;
+  }
+}

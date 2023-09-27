@@ -28,6 +28,7 @@ function EventVision() {
     const [imgUrl, setUrl] = useState();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento
+    const [participants, setParticipants] = useState(0);
 
     const openModal = () => {
       setIsModalOpen(true);
@@ -53,10 +54,10 @@ function EventVision() {
 
     const checkNumeroParticipantes = async () => {
         try {
-            const confirmacao = await numeroParticipantes(id);
-            console.log("Retorno: ", confirmacao);
+            const response = await numeroParticipantes(id);
+            console.log("Retorno: ", response);
             
-            setConfirmado(confirmacao.isParticipating);
+            setParticipants(response.numberOfParticipating)
         } catch (error) {
             console.error('Erro ao verificar a confirmação do usuário:', error);
         }
@@ -170,7 +171,7 @@ function EventVision() {
                         <span className={styles.microInfo}> <img src={pinpoint_icon} /> {actualEvent.endereco} </span>
                         <span className={styles.microInfo}> <img src={calendar_icon} /> {actualEvent.inicio} </span>
                         <span className={styles.microInfo}> <img src={clock_icon} /> {horaParte(actualEvent.horario)} </span>
-                        <span className={styles.microInfo}> <img src={people_icon} /> {500} </span>
+                        <span className={styles.microInfo}> <img src={people_icon} /> {participants} </span>
                     </div>
                 </div>
             </div>
