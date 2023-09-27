@@ -12,7 +12,7 @@ import people_icon from '../assets/people_icon.png';
 import EventosMocados from '../assets/EventosMocados';
 import { Link, useParams } from 'react-router-dom';
 import Modal from './Modal';
-import { getOneEvent, confirmarParticipacao, verificarConfirmacao, numeroParticipantes } from '../services/event';
+import { getOneEvent, confirmarParticipacao, verificarConfirmacao, numeroParticipantes, mediaRatings } from '../services/event';
 
 function horaParte(horario: any) {
     const partes = horario.split('T');
@@ -28,6 +28,7 @@ function EventVision() {
     const [imgUrl, setUrl] = useState();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento
+    const [participants, setParticipants] = useState(0);
 
     const openModal = () => {
       setIsModalOpen(true);
@@ -53,10 +54,10 @@ function EventVision() {
 
     const checkNumeroParticipantes = async () => {
         try {
-            const confirmacao = await numeroParticipantes(id);
-            console.log("Retorno: ", confirmacao);
+            const response = await numeroParticipantes(id);
+            console.log("Retorno: ", response);
             
-            setConfirmado(confirmacao.isParticipating);
+            setParticipants(response.numberOfParticipating)
         } catch (error) {
             console.error('Erro ao verificar a confirmação do usuário:', error);
         }
@@ -90,6 +91,9 @@ function EventVision() {
 
                 verificarConfirmacaoUsuario();
                 checkNumeroParticipantes();
+                const ximbas = mediaRatings();
+                console.log(ximbas);
+                
     
                 setIsLoading(false);
             } catch (error) {
@@ -106,18 +110,6 @@ function EventVision() {
         setUserRating(newValue);
     };
 
-    const handleFormSubmit = (e: any) => {
-        e.preventDefault();
-        // Aqui você pode criar um objeto com todos os dados relevantes, incluindo a avaliação do usuário
-        const dataToSend = {
-            rating: userRating,
-            // Adicione outros campos do formulário, se houver
-        };
-        // Agora você pode enviar 'dataToSend' para o servidor ou realizar outra ação necessária
-        setFormData(dataToSend); // Isso é opcional, apenas para visualização
-    };
-
-    // Renderiza uma mensagem de carregamento enquanto isLoading for true
     if (isLoading) {
         return <div>Carregando...</div>;
     }
@@ -170,7 +162,7 @@ function EventVision() {
                         <span className={styles.microInfo}> <img src={pinpoint_icon} /> {actualEvent.endereco} </span>
                         <span className={styles.microInfo}> <img src={calendar_icon} /> {actualEvent.inicio} </span>
                         <span className={styles.microInfo}> <img src={clock_icon} /> {horaParte(actualEvent.horario)} </span>
-                        <span className={styles.microInfo}> <img src={people_icon} /> {500} </span>
+                        <span className={styles.microInfo}> <img src={people_icon} /> {participants} </span>
                     </div>
                 </div>
             </div>
