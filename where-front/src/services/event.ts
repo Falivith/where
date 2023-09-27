@@ -69,11 +69,22 @@ export async function confirmarParticipacao(codEvento: number, confirmed: boolea
       confirmado: confirmed
     }
 
-    const response = await baseUrl.post(`/participate`, json, {
-      headers: {
-        'where-access-token': token,
-      },
-    });
+    let response;
+
+    if (!json.confirmado) {
+      response = await baseUrl.delete(`/participate`, {
+        headers: {
+          'where-access-token': token,
+        },
+        data: json, // Use a propriedade 'data' para enviar o JSON no corpo da solicitação DELETE
+      });
+    } else {
+      response = await baseUrl.post(`/participate`, json, {
+        headers: {
+          'where-access-token': token,
+        },
+      });
+    }
     
     return response.data;
   } catch (error) {

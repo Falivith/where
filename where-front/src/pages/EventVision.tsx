@@ -45,7 +45,7 @@ function EventVision() {
             const confirmacao = await verificarConfirmacao(actualEvent.codEvento);
             console.log(confirmacao);
             
-            setConfirmado(confirmacao);
+            setConfirmado(confirmacao.isParticipating);
         } catch (error) {
             console.error('Erro ao verificar a confirmação do usuário:', error);
         }
@@ -53,11 +53,12 @@ function EventVision() {
     
     const alterarConfirmacao = async () => {
         try {
-            const response = await confirmarParticipacao(actualEvent.codEvento, true);
-
+            let novoStatus = !confirmado; // Inverta o estado de confirmação
+            const response = await confirmarParticipacao(actualEvent.codEvento, novoStatus);
+            
             console.log(response);
             
-            setConfirmado(!confirmado);
+            setConfirmado(novoStatus); // Atualize o estado de confirmação com o novoStatus
         } catch (error) {
             console.error('Erro ao confirmar participação:', error);
         }

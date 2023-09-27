@@ -38,6 +38,9 @@ const router = createBrowserRouter([
   {
     path: "/evento/:index",
     element: <EventVision />
+  },
+  {
+    path: "/editevento/:index",
   }
 ]);
 
