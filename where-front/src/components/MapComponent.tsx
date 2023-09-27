@@ -1,4 +1,5 @@
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import icon from '../assets/map_pin.png';
 
 const MapComponent = () => {
   const containerStyle = {
@@ -22,8 +23,15 @@ const MapComponent = () => {
     // Outros pontos
   ];
 
+
   const mapOptions = {
     disableDefaultUI: true,
+    clickableIcons: false,
+  };
+
+  const handleMarkerClick = (location: any) => {
+    // Faça algo quando um marcador for clicado, por exemplo, exibir informações
+    alert(`Você clicou em: ${location.name}`);
   };
 
   return (
@@ -31,7 +39,7 @@ const MapComponent = () => {
       <GoogleMap mapContainerStyle={containerStyle} center={initialCenter} zoom={initialZoom} options={mapOptions}>
       <Marker position={initialCenter} title="Marcador Inicial" />
         {data.map((location, index) => (
-          <Marker key={index} position={{ lat: location.lat, lng: location.lng }} title={location.name} />
+          <Marker key={index} position={{ lat: location.lat, lng: location.lng }} title={location.name} onClick={() => handleMarkerClick(location)} /*icon={{ url: icon, scaledSize: new window.google.maps.Size(30,30) }}*/ />
         ))}
       </GoogleMap>
     </LoadScript>
