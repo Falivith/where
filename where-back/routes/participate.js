@@ -59,10 +59,10 @@ router.post('/', validateToken, async function(req, res,next) {
         }
     })
     if(participando) {
-        req.responseJson.participating = true;
+        req.responseJson.alreadyParticipating = true;
         return res.status(400).json(req.responseJson);
     }
-    req.responseJson.isParticipating = false;
+    req.responseJson.alreadyParticipating = false;
 
     try {
         await participam.create({
@@ -146,6 +146,25 @@ router.put('/', validateToken, async function(req,res,next) {
     }
 })
 
+router.get('/:id', validateToken, async function(req,res,next) {
+    try {
+        const participa = await participam.findOne({
+            where : {
+                codEvento_fk: req.params.id,
+                email_fk: req.username
+            }
+        })
+
+        if(participa) {
+            return res.status(200).json({isParticipating: true, confirmed: participa.confirmed})
+        } else {
+            return res.status(200).json({isParticipating: false})
+        }
+    } catch(error) {
+            req.responseJson.error = error
+            return res.status(400).json(req.responseJson)
+    }
+})
 
 
 
