@@ -97,6 +97,9 @@ export async function verificarConfirmacao(id: number) {
   try {
     const token = Cookies.get('where-access-token');
 
+    console.log("ID enviado:", id);
+    
+
     const response = await baseUrl.get(`/participate/${id}`, {
       headers: {
         'where-access-token': token,
