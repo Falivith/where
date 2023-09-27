@@ -1,3 +1,4 @@
+/* eslint-disable */
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -113,7 +114,7 @@ export async function verificarConfirmacao(id: number) {
   }
 }
 
-export async function numeroParticipantes(id: number) {
+export async function numeroParticipantes(id: any) {
   try {
     const token = Cookies.get('where-access-token');
 
@@ -130,7 +131,7 @@ export async function numeroParticipantes(id: number) {
   }
 }
 
-export async function postAvaliacao(id: number, comentario: string, userRating: number) {
+export async function postAvaliacao(id: any, comentario: string, userRating: number) {
   try {
     const token = Cookies.get('where-access-token');
 
@@ -169,3 +170,21 @@ export async function mediaRatings(id: number) {
     throw error;
   }
 }
+
+export async function ratingsAll(id: number) {
+  try {
+    const token = Cookies.get('where-access-token');
+
+    const response = await baseUrl.get(`ratings/all/${id}/`, {
+      headers: {
+        'where-access-token': token,
+      },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao consultar avaliações", error);
+    throw error;
+  }
+}
+

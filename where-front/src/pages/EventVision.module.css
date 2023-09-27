@@ -138,3 +138,36 @@
     align-items: center;
     gap: 10px;
 }
+
+.commentSection{
+    max-width: 500px;
+    display: flex;
+    margin: auto;
+    background: rgba(0, 0, 0, 1);
+    border-radius: 20px;
+    padding: 10px;
+    gap: 40px;
+}
+
+.comment{
+    background: #EB4335;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100%;
+    border-radius: 10px;
+    padding: 5px;
+    padding-left: 20px;
+}
+
+.comment > div{
+    text-align: end;
+    display: flex;
+    flex-direction: column;
+    padding-right: 10px;
+    gap: 10px;
+}
+
+.comment > div > p{
+    margin: 1px;
+}

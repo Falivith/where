@@ -3,11 +3,13 @@ import Header from '../components/Header';
 import styles from './ClassifyEvent.module.css';
 import { Rating } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getOneEvent, postAvaliacao } from '../services/event';
 
 function ClassifyEvent() {
+
+    const navigate = useNavigate();
 
     const [userRating, setUserRating] = useState(0);
     const [event, setEvent] = useState(0);
@@ -21,7 +23,7 @@ function ClassifyEvent() {
         setUserRating(newValue);
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: any) => {
         // Atualize o estado do campo de entrada com o valor digitado
         setInputContent(e.target.value);
     };
@@ -35,6 +37,9 @@ function ClassifyEvent() {
         try {
             const response = await postAvaliacao(id, inputContent, userRating);
             console.log(response);
+            if(response){
+                navigate('/events')
+            }
         } catch (error) {
             console.error('Erro ao enviar avaliação:', error);
         }
