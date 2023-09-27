@@ -1,11 +1,13 @@
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import icon from '../assets/map_pin2.png';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getEvents } from '../services/event';
 
 const MapComponent = () => {
 
   const navigate = useNavigate();
-  
+
   const containerStyle = {
     width: '1200px',
     height: '500px'
@@ -14,21 +16,11 @@ const MapComponent = () => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   const initialCenter = {
-    lat: -31.7649 ,
-    lng: -52.3376
+    lat:  -31.0332,
+    lng:  -42.098632
   };
 
-  //const initialCenter = new google.maps.LatLng(-31.7649, -52.3376);
-
-  const initialZoom = 15;
-
-  const data = [
-    { lat: -31.7649, lng: -52.3376, name: 'Local 1' },
-    { lat: -31.7650, lng: -52.3377, name: 'Local 2' },
-    { lat: -31.7651, lng: -52.3378, name: 'Local 3' },
-    // Outros pontos
-  ];
-
+  const initialZoom = 5;
 
   const mapOptions = {
     disableDefaultUI: true,
@@ -37,10 +29,10 @@ const MapComponent = () => {
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [markersVisible, setMarkersVisible] = useState(false);
+  const [data, setData] = useState([{lat: 1.23, lng: 1.23, name: "alo"}]);
 
   const handleMarkerClick = (location: any) => {
-    // Faça algo quando um marcador for clicado, por exemplo, exibir informações
-    alert(`Você clicou em: ${location.name}`);
+    navigate(`/evento/${location.id}`);
   };
 
   useEffect(() => {
@@ -51,6 +43,35 @@ const MapComponent = () => {
     }
   }, [map]);
 
+  useEffect(() => {
+    // Função assíncrona para buscar os eventos
+    async function fetchEvents() {
+      try {
+        const response = await getEvents(); // Aguarde a resolução da promessa
+        console.log(response);
+
+        // Popule data com os dados da resposta
+        const newData = response.map((event) => ({
+          lat: parseFloat(event.latitude),
+          lng: parseFloat(event.longitude),
+          name: event.nome,
+          id: event.codEvento
+        }));
+
+        console.log(newData);
+        
+
+        setData(newData); // Atualize o estado data com os dados
+
+      } catch (error) {
+        console.error('Erro ao buscar eventos:', error);
+      }
+    }
+
+    // Chame a função para buscar os eventos
+    fetchEvents();
+  }, []); // Certifique-se de fornecer uma dependência vazia para executar isso apenas uma vez
+
   return (
     <LoadScript googleMapsApiKey={apiKey}>
       <GoogleMap
@@ -60,14 +81,14 @@ const MapComponent = () => {
         options={mapOptions}
         onLoad={(map) => setMap(map)}
       >
-      <Marker position={initialCenter} title="Marcador Inicial"/>
+        <Marker position={initialCenter} title="Marcador Inicial" />
         {markersVisible && data.map((location, index) => (
           <Marker
             key={index}
             position={{ lat: location.lat, lng: location.lng }}
             title={location.name}
             onClick={() => handleMarkerClick(location)}
-            /*icon={{ url: icon, scaledSize: new window.google.maps.Size(30,45) }}*/
+            icon={{ url: icon, scaledSize: new window.google.maps.Size(30,45) }}
           />
         ))}
       </GoogleMap>
