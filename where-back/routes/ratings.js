@@ -198,7 +198,7 @@ router.get('/average/:id', validateToken, async function(req,res,next) {
 
     try {
         const numberOfRatings = await avalia.count({
-            where: {codEvento_fk: req.body.codEvento_fk}
+            where: {codEvento_fk: req.params.id}
         })
         console.log(numberOfRatings);
         if(numberOfRatings > 0) {
