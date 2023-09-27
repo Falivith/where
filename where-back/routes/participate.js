@@ -11,26 +11,26 @@ const {eventUpdateValidation,eventValidation} = require('../utils/validation')
 //  {
 //
 //  }
-router.get('/:id', validateToken, async function(req, res, next) {
-
-
-    const part = await participam.findOne({where: {email_fk:req.username, codEvento_fk:req.params.id}});
-    if(!part) return res.status(200).json({
-        interested:false,
-        confirmed:false
-    });
-
-    if(part.confirmado == true) return res.status(200).json({
-        interested:false,
-        confirmed:true
-    })
-
-    return res.status(200).json({
-        interested:true,
-        confirmed:false
-    })
-
-})
+// router.get('/:id', validateToken, async function(req, res, next) {
+//
+//
+//     const part = await participam.findOne({where: {email_fk:req.username, codEvento_fk:req.params.id}});
+//     if(!part) return res.status(200).json({
+//         interested:false,
+//         confirmed:false
+//     });
+//
+//     if(part.confirmado == true) return res.status(200).json({
+//         interested:false,
+//         confirmed:true
+//     })
+//
+//     return res.status(200).json({
+//         interested:true,
+//         confirmed:false
+//     })
+//
+// })
 
 // CREATE:Add user to "PARTICIPAM" table
 //
@@ -156,7 +156,7 @@ router.get('/:id', validateToken, async function(req,res,next) {
         })
 
         if(participa) {
-            return res.status(200).json({isParticipating: true, confirmed: participa.confirmed})
+            return res.status(200).json({isParticipating: true, confirmed: participa.confirmado})
         } else {
             return res.status(200).json({isParticipating: false})
         }
