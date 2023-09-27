@@ -82,5 +82,19 @@ export async function confirmarParticipacao(codEvento: number, confirmed: boolea
   }
 }
 
+export async function verificarConfirmacao(id: number) {
+  try {
+    const token = Cookies.get('where-access-token');
 
-
+    const response = await baseUrl.get(`/participate/${id}`, {
+      headers: {
+        'where-access-token': token,
+      },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao verificar participação ", error);
+    throw error;
+  }
+}

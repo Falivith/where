@@ -12,7 +12,7 @@ import people_icon from '../assets/people_icon.png';
 import EventosMocados from '../assets/EventosMocados';
 import { Link, useParams } from 'react-router-dom';
 import Modal from './Modal';
-import { getOneEvent, confirmarParticipacao } from '../services/event';
+import { getOneEvent, confirmarParticipacao, verificarConfirmacao } from '../services/event';
 
 function horaParte(horario: any) {
     const partes = horario.split('T');
@@ -39,6 +39,17 @@ function EventVision() {
 
     const params = useParams();
     const id = params.index;
+
+    const verificarConfirmacaoUsuario = async () => {
+        try {
+            const confirmacao = await verificarConfirmacao(actualEvent.codEvento);
+            console.log(confirmacao);
+            
+            setConfirmado(confirmacao);
+        } catch (error) {
+            console.error('Erro ao verificar a confirmação do usuário:', error);
+        }
+    };
     
     const alterarConfirmacao = async () => {
         try {
@@ -64,6 +75,8 @@ function EventVision() {
                 const blob = new Blob([uint8Array], { type: "application/octet-stream" }); // Use um MIME type apropriado
                 const url = URL.createObjectURL(blob);
                 setUrl(url);
+
+                verificarConfirmacaoUsuario();
     
                 setIsLoading(false);
             } catch (error) {
