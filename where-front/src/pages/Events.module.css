@@ -15,6 +15,7 @@
 }
 
 .gridItem {
+    position: relative;
     display: flex;
     height: 300px;
     border-radius: 20px; /* Reduzir a borda arredondada */
@@ -82,3 +83,54 @@
     cursor: pointer;
 }
   
+.editButton{
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    display: flex;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.1);
+    width: 40px;
+    height: 40px;
+    transition: .2s;
+    align-items: center;
+    justify-content: center;
+    
+    z-index: 3;
+}
+
+.editButton:hover{
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    display: flex;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.7);
+    transition: .2s;
+}
+
+.editButton > img{ 
+    transition: transform 0.2s ease-in;
+    width: 35px;
+    z-index: 3;
+}
+
+.editButton > img:hover{
+    transform: scale(1.15);
+    transition: transform 0.2s ease-out;
+    filter: invert(100%);
+}
+
+.eventTitle{
+    position: absolute;
+    bottom: 10px;
+    color: white;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
+    padding: 4px;
+}

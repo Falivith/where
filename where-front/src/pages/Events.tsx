@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import styles from './Events.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PlusSymbol from '../assets/plusSymbol.png';
 import { promoterChecker } from '../services/promoter';
 import { getEvents } from '../services/event';
+import gear from '../assets/gear.png'
 
 function Events() {
+  const navigate = useNavigate();
   const [isPromoter, setIsPromoter] = useState(false);
   const [events, setEvents] = useState([]);
   const [showEventsStartingWithB, setShowEventsStartingWithB] = useState(false); // Estado para alternar entre mostrar todos e mostrar eventos com nomes começando com "B"
@@ -82,9 +84,22 @@ function Events() {
             const blob = new Blob([uint8Array], { type: 'application/octet-stream' });
             const url = URL.createObjectURL(blob);
 
+            console.log(event);
+            
+            if (event.isCreator) {
+              return (
+                <Link key={event.codEvento} to={`/evento/${event.codEvento}`} className={styles.gridItem}>
+                  {event.foto && event.foto.buffer && <img src={url} alt={`Evento ${event.codEvento}`} />}
+                  <span className={ styles.eventTitle }>{event.nome}</span>
+                  <button  className = {styles.editButton }><img src={gear} onClick={() => navigate('/editEvento')}></img></button>
+                </Link>
+              );
+            }
+
             return (
               <Link key={event.codEvento} to={`/evento/${event.codEvento}`} className={styles.gridItem}>
                 {event.foto && event.foto.buffer && <img src={url} alt={`Evento ${event.codEvento}`} />}
+                <span className={ styles.eventTitle }>{event.nome}</span>
               </Link>
             );
           })}

@@ -9,21 +9,29 @@ import pinpoint_icon from '../assets/pinpoint_icon.png';
 import calendar_icon from '../assets/calendar_icon.png';
 import clock_icon from '../assets/clock_icon.png';
 import people_icon from '../assets/people_icon.png';
-import EventosMocados from '../assets/EventosMocados';
 import { Link, useParams } from 'react-router-dom';
 import Modal from './Modal';
 import { getOneEvent, confirmarParticipacao, verificarConfirmacao, numeroParticipantes, mediaRatings, ratingsAll } from '../services/event';
 
 function horaParte(horario: any) {
-    const partes = horario.split('T');
-    const final = partes[1].split('.000Z');
-    return final[0];
+    if (horario && typeof horario === 'string') {
+        const partes = horario.split('T');
+        if (partes.length > 1) {
+            const final = partes[1].split('.000Z');
+            return final[0];
+        }
+    }
+    return ''; // Ou outra ação adequada caso horario não seja uma string válida
 }
 
-function data(horario: any){
-    const partes = horario.split('T');
-    const final = partes[0];
-    return final;
+function data(horario: any) {
+    if (horario && typeof horario === 'string') {
+        const partes = horario.split('T');
+        if (partes.length > 0) {
+            return partes[0];
+        }
+    }
+    return ''; // Ou outra ação adequada caso horario não seja uma string válida
 }
 
 function EventVision() {
@@ -100,7 +108,9 @@ function EventVision() {
                 checkNumeroParticipantes();
                 const mediaResponse = await mediaRatings(id);
                 const commentsResponse = await ratingsAll(id);
-
+                
+                console.log(commentsResponse);
+                
                 setComments(commentsResponse);
                 
                 setUserRating(mediaResponse.average)
