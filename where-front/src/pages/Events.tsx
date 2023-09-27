@@ -55,6 +55,7 @@ function Events() {
               };
             };
           }) => {
+            
             const uint8Array = new Uint8Array(event.foto.buffer.data);
             const blob = new Blob([uint8Array], { type: "application/octet-stream" }); // Use an appropriate MIME type
             const url = URL.createObjectURL(blob);
