@@ -166,7 +166,7 @@ router.get('/all', validateToken, async function (req, res, next) {
         // }
         );
         listEventos.forEach(evento => {
-            evento.isCreator = evento.email_fk == req.username
+            evento.dataValues.isCreator = evento.email_fk == req.username
             evento.email_fk = undefined
             if (evento.foto){
                 const utf8EncodedBuffer = Buffer.from(evento.foto, 'utf-8');
@@ -174,6 +174,7 @@ router.get('/all', validateToken, async function (req, res, next) {
                 evento.foto = JSON.parse(decodedString)
             }
         })
+        console.log(listEventos)
         return res.status(200).json(listEventos);
     } catch (error) {
         req.responseJson.error = error;
